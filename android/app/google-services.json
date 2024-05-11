@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "905077645826",
+    "project_id": "mithub-79d43",
+    "storage_bucket": "mithub-79d43.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:905077645826:android:f7d4aecd6f5a8748be7d1b",
+        "android_client_info": {
+          "package_name": "com.example.mithub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4LRWpoKh0NDQ3_D_HzT-Pn3NI5xQi4Nc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
