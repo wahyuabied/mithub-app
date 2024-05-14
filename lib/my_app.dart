@@ -3,9 +3,16 @@ import 'dart:async';
 import 'package:alice/alice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mithub_app/core/di/service_locator.dart';
+import 'package:mithub_app/core/event_bus/event_bus_listener.dart';
+import 'package:mithub_app/core/event_bus/general_ui_event.dart';
 import 'package:mithub_app/core/notification/notification_data.dart';
 import 'package:mithub_app/core/notification/notification_route.dart';
+import 'package:mithub_app/core/routing/a_route.dart';
+import 'package:mithub_app/design/theme.dart';
+import 'package:mithub_app/routes/auth_routes.dart';
+import 'package:upgrader/upgrader.dart';
 
 class MyApp extends StatefulWidget {
   final StreamController<NotificationData> notificationStream;
@@ -18,7 +25,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   final Alice httpInspector = serviceLocator.get();
-
+  final ARouter aRouter = serviceLocator.get();
+  final GlobalKey<NavigatorState> navigatorKey = serviceLocator.get();
   late StreamSubscription _notifStream;
 
   @override
@@ -33,6 +41,31 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     });
   }
 
+  late final goRouter = GoRouter(
+    initialLocation: '/login',
+    routes: [
+      ShellRoute(
+        observers: [
+          aRouter.routeObserver,
+        ],
+        navigatorKey: aRouter.rootSheelNavigatorKey,
+        builder: (context, state, child) => child,
+        routes: AuthRoutes.mainRoutes,
+      ),
+    ],
+    navigatorKey: navigatorKey,
+  );
+
+  void handleGeneralUIEvent(BuildContext context, dynamic event) {
+    if (event is UIShowSnackbar) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(event.message),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -41,63 +74,25 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       splitScreenMode: false,
       useInheritedMediaQuery: true,
       builder: (ctx, child) {
-        return MaterialApp(
-          title: 'Flutter Demo',
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-          ),
-          home: const MyHomePage(title: 'Flutter Demo Home Page'),
+        return MaterialApp.router(
+          routerConfig: goRouter,
+          themeMode: ThemeMode.system,
+          theme: funDsTheme(context),
+          builder: (context, widget) {
+            return MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+              child: UpgradeAlert(
+                child: EventBusListener(
+                  onEvent: (event) {
+                    handleGeneralUIEvent(context, event);
+                  },
+                  child: widget!,
+                ),
+              ),
+            );
+          },
         );
       },
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
