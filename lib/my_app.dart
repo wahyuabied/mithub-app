@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   late final goRouter = GoRouter(
-    initialLocation: '/login',
+    initialLocation: '/onboarding',
     routes: [
       ShellRoute(
         observers: [

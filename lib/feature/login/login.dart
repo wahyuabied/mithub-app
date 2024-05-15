@@ -1,15 +1,11 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mithub_app/core/di/service_locator.dart';
 import 'package:mithub_app/data/repository/auth_repository.dart';
-import 'package:mithub_app/design/colors.dart';
 import 'package:mithub_app/design/theme_extension.dart';
 import 'package:mithub_app/design/widget/app_bar.dart';
-import 'package:mithub_app/design/widget/error_loading_dialog.dart';
-import 'package:mithub_app/design/widget/loading_dialog.dart';
 import 'package:mithub_app/design/widget/number_keyboard.dart';
 import 'package:mithub_app/design/widget/phone_number_field.dart';
 import 'package:mithub_app/routes/auth_routes.dart';
@@ -92,12 +88,15 @@ class _LoginPhoneScreenState extends State<LoginPhoneScreen> {
                           children: [
                             ElevatedButton(
                               onPressed:
-                              enableLoginButton ? onClickLoginButton : null,
+                                  enableLoginButton ? onClickLoginButton : null,
                               child: const Text('Masuk'),
                             ),
                             TextButton(
                               onPressed: () {
-
+                                context.pushNamed(AuthRoutes.inputPin.name!,
+                                    queryParameters: {
+                                      'phone': prefix + phoneNumber
+                                    });
                               },
                               child: const Text('Butuh Bantuan?'),
                             ),
@@ -128,53 +127,10 @@ class _LoginPhoneScreenState extends State<LoginPhoneScreen> {
     );
   }
 
-  void onClickLoginButton() async {
-    unawaited(showDialog(
-      context: context,
-      barrierDismissible: false,
-      useRootNavigator: false,
-      builder: (context) => const LoadingDialog(),
-    ));
-    final phone = completePhoneNumber;
-
-    final isRegistered = await authRepository.checkPhoneIsRegistered(phone);
-
-    if (!mounted) return;
-    Navigator.pop(context);
-
-    if (isRegistered) {
-      unawaited(context.pushNamed(
-        AuthRoutes.inputPin.name!,
-        extra: InputPinExtra(
-          phone: phone,
-        ),
-      ));
-    } else {
-      _showErrorDialog(context);
-    }
-  }
-
-  void _showErrorDialog(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: FunDsColors.white,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12.r),
-          topRight: Radius.circular(12.r),
-        ),
-      ),
-      builder: (BuildContext context) {
-        return const ErrorDialog(
-          title: 'Maaf, Anda belum punya akun',
-          subtitle:
-          '''Nomor ini belum terdaftar di AmarthaFin. Yuk daftar untuk bisa masuk!''',
-          imageAsset: 'assets/images/error_ibu_amanah_green.png',
-          primaryButtonText: 'Daftar Sekarang',
-          secondaryButtonText: 'Kembali',
-        );
-      },
+  void onClickLoginButton() {
+    context.pushNamed(
+      AuthRoutes.inputPin.name!,
+      queryParameters: {'phone': prefix + phoneNumber},
     );
   }
 

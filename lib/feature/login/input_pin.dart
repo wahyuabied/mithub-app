@@ -17,12 +17,10 @@ import 'package:mithub_app/routes/auth_routes.dart';
 
 class InputPinScreen extends StatefulWidget {
   final String phone;
-  final String authPurpose;
 
   const InputPinScreen({
     super.key,
     required this.phone,
-    required this.authPurpose,
   });
 
   @override
@@ -33,7 +31,6 @@ class _InputPinScreenState extends State<InputPinScreen> {
   static const pinSize = 6;
   final pin = Queue<int>();
   final _authRepo = serviceLocator<AuthRepository>();
-
   var wrongPinError = false;
 
   @override
@@ -87,14 +84,14 @@ class _InputPinScreenState extends State<InputPinScreen> {
             ),
           ),
           Visibility(
-            visible: getVisibilityByPurpose(widget.authPurpose),
+            visible: true,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 0),
               child: Row(
                 children: [
                   const Text('Lupa PIN? '),
                   InkWell(
-                    onTap: () => _onForgotPin(widget.phone, widget.authPurpose),
+                    onTap: () => _onForgotPin(widget.phone, ''),
                     child: const Text(
                       'Klik Disini',
                       style: TextStyle(
@@ -117,9 +114,7 @@ class _InputPinScreenState extends State<InputPinScreen> {
 
                     // pin completed
                     if (pin.length == pinSize) {
-                      if (widget.authPurpose == AuthPurpose.login) {
-                        _onPinCompleted(widget.phone, pin);
-                      }
+                      _onPinCompleted(widget.phone, pin);
                     }
                   },
                   onBackPressed: () {
@@ -147,9 +142,7 @@ class _InputPinScreenState extends State<InputPinScreen> {
     }
   }
 
-  void _onForgotPin(String phone, authPurpose) async {
-
-  }
+  void _onForgotPin(String phone, authPurpose) async {}
 
   void _onPinCompleted(String phone, Queue<int> pin) async {
     unawaited(showDialog(
@@ -168,19 +161,27 @@ class _InputPinScreenState extends State<InputPinScreen> {
     if (loginResult is ImmediateLogin) {
       // context.goNamed(HomepageRoutes.main.name!);
     } else {
-      unawaited(showDialog(
+      showModalBottomSheet<void>(
         context: context,
-        useRootNavigator: false,
-        builder: (context) => const ErrorDialog(
-          title: 'Tunggu 30 menit dan coba lagi',
-          subtitle: '''
-Maaf, Anda sudah 4 kali salah masukkan PIN, silakan login kembali setelah 30 menit, ya.''',
-          imageAsset: 'assets/images/error_ibu_amanah_whistle.png',
-          primaryButtonText: 'Oke, mengerti',
-          secondaryButtonText: 'Lupa PIN',
+        backgroundColor: FunDsColors.white,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12.r),
+            topRight: Radius.circular(12.r),
+          ),
         ),
-      ));
+        builder: (BuildContext context) {
+          return ErrorDialog(
+            title: 'Maaf, Pin anda salah',
+            subtitle:
+                'PIN yang anda masukkan salah cek kembali PIN untuk Nomor $phone',
+            imageAsset: 'assets/images/error_ibu_amanah_green.png',
+            primaryButtonText: 'Daftar Sekarang',
+            secondaryButtonText: 'Kembali',
+          );
+        },
+      );
     }
   }
-
 }

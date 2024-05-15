@@ -4,7 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 AppBar textAppBar(String title, {bool centerTitle = false}) {
   return AppBar(
-    title: Text(title),
+    title: Padding(
+      padding: EdgeInsets.only(left: 4.w),
+      child: Text(title),
+    ),
     titleTextStyle: GoogleFonts.raleway(
       fontSize: 22.sp,
       color: Colors.black,

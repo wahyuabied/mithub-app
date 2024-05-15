@@ -1,15 +1,27 @@
 import 'package:go_router/go_router.dart';
 import 'package:mithub_app/core/routing/a_page.dart';
-import 'package:mithub_app/login/input_pin.dart';
-import 'package:mithub_app/login/login.dart';
+import 'package:mithub_app/feature/login/input_pin.dart';
+import 'package:mithub_app/feature/login/login.dart';
+import 'package:mithub_app/feature/onboarding/onboarding_screen.dart';
 
 class AuthRoutes {
   AuthRoutes._();
 
   static final mainRoutes = [
+    onboarding,
     login,
     inputPin,
   ];
+
+  static final onboarding = GoRoute(
+    path: '/onboarding',
+    name: 'Onboarding',
+    pageBuilder: (context, state) =>
+        APage(
+          key: state.pageKey,
+          child: const OnboardingScreen(),
+        ),
+  );
 
   static final login = GoRoute(
     path: '/login',
@@ -25,28 +37,14 @@ class AuthRoutes {
     path: '/input-pin',
     name: 'Input Pin',
     pageBuilder: (context, state) {
-      final extra = state.extra as InputPinExtra;
-
       return APage(
         key: state.pageKey,
         child: InputPinScreen(
-          phone: extra.phone,
-          authPurpose: extra.authPurpose,
+          phone: state.uri.queryParameters['phone'] as String,
         ),
       );
     },
   );
-
-}
-
-class InputPinExtra {
-  InputPinExtra({
-    required this.phone,
-    this.authPurpose = AuthPurpose.login,
-  });
-
-  final String phone;
-  final String authPurpose;
 }
 
 class AuthPurpose {
