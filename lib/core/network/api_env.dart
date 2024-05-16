@@ -2,11 +2,11 @@
 enum ApiEnv {
   dev(
     aplusUrl: 'api-aplus-dev.amartha.id/v1/api/',
-    localHost: 'localhost:3000/api/v1.0/mobile/'
+    localHost: '172.16.4.242:3000/api/v1.0/mobile/'
   ),
   prod(
     aplusUrl: 'api.amartha.net/v1/api/',
-    localHost: 'localhost:3000/api/v1.0/mobile/'
+    localHost: '172.16.4.242:3000/api/v1.0/mobile/'
   );
 
   final String aplusUrl;
