@@ -86,27 +86,14 @@ class AuthRepository {
     String phone,
     String pin,
   ) async {
-    final uuid = await deviceUuid();
-    return _authNetwork.postLogin(phone, pin, uuid).then((response) async {
+    return _authNetwork.postLogin(phone, pin).then((response) async {
+      debugPrint(response.statMsg);
       if (response.isSuccess) {
         await saveSession(
           token: response.data?.token,
-          refreshToken: response.data?.refreshToken,
-          sessionToken: response.data?.sessionToken,
         );
-
-        final isPinExpired = response.data?.isPinExpired ?? false;
-        final isDeviceRegistered = response.data?.isDeviceRegistered ?? false;
-
-        if (isPinExpired) {
-          return LoginResult.pinExpired();
-        } else if (!isDeviceRegistered) {
-            return LoginResult.failed();
-        } else {
-          // asynchronously loaded
-          unawaited(saveFirebaseTokenToServer());
-          return LoginResult.immediateLogin(response.data!);
-        }
+        unawaited(saveFirebaseTokenToServer());
+        return LoginResult.immediateLogin(response.data!);
       } else if (response.statusCode == 400) {
         // somehow failed to request login
         return LoginResult.wrongPin();

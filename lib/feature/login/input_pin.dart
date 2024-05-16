@@ -159,6 +159,26 @@ class _InputPinScreenState extends State<InputPinScreen> {
     Navigator.pop(context);
 
     if (loginResult is ImmediateLogin) {
+      showModalBottomSheet<void>(
+        context: context,
+        backgroundColor: FunDsColors.white,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12.r),
+            topRight: Radius.circular(12.r),
+          ),
+        ),
+        builder: (BuildContext context) {
+          return ErrorDialog(
+            title: 'Success Lur',
+            subtitle:'Success',
+            imageAsset: 'assets/images/error_ibu_amanah_green.png',
+            primaryButtonText: 'Daftar Sekarang',
+            secondaryButtonText: 'Kembali',
+          );
+        },
+      );
       // context.goNamed(HomepageRoutes.main.name!);
     } else {
       showModalBottomSheet<void>(

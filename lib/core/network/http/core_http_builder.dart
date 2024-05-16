@@ -24,12 +24,12 @@ class CoreHttpBuilder {
 
   Future<ApiEnv> get apiEnv => coreHttpRepository.getEnv();
 
-  CoreHttpClient aplusEwallet({
+  CoreHttpClient localHost({
     required String path,
     Json? query,
     Map<String, String>? headers,
   }) {
-    final url = apiEnv.then((value) => value.aplusEwalletUrlKrakend);
+    final url = apiEnv.then((value) => value.localHost);
 
     return _buildClient(
       url,
@@ -47,184 +47,6 @@ class CoreHttpBuilder {
       _buildClient(
           apiEnv.then((value) => value.aplusUrl), path, query, headers);
 
-  CoreHttpClient aplusCustomer({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) =>
-      _buildClient(
-        apiEnv.then((value) => value.aplusCustomerUrl),
-        path,
-        query,
-        headers,
-      );
-
-  CoreHttpClient aplusPpob({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) {
-    final url = apiEnv.then((value) => value.aplusPpobUrlKrakend);
-
-    return _buildClient(url, path, query, headers);
-  }
-
-  CoreHttpClient aplusRepayment({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) =>
-      _buildClient(apiEnv.then((value) => value.aplusRepaymentUrl), path, query,
-          headers);
-
-  CoreHttpClient aplusPaylater({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) =>
-      _buildClient(
-          apiEnv.then((value) => value.aplusPaylaterUrl), path, query, headers);
-
-  CoreHttpClient aplusBuying({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) =>
-      _buildClient(
-          apiEnv.then((value) => value.aplusBuyingUrl), path, query, headers);
-
-  CoreHttpClient aplusDigitalLedgerUser({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) {
-    final url = apiEnv.then((value) => value.aplusDigitalLedgerUserUrlKrakend);
-
-    return _buildClient(url, path, query, headers);
-  }
-
-  CoreHttpClient aplusDigitalLedger({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) {
-    final url = apiEnv.then((value) => value.aplusDigitalLedgerUrlKrakend);
-
-    return _buildClient(url, path, query, headers);
-  }
-
-  CoreHttpClient aplusCsr({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) =>
-      _buildClient(
-          apiEnv.then((value) => value.aplusCsrUrl), path, query, headers);
-
-  CoreHttpClient aplusLoan({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) =>
-      _buildClient(
-          apiEnv.then((value) => value.aplusLoanUrl), path, query, headers);
-
-  CoreHttpClient aplusLoanDisb({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) =>
-      _buildClient(
-          apiEnv.then((value) => value.aplusLoanDisbUrl), path, query, headers);
-
-  CoreHttpClient aplusPoint({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) =>
-      _buildClient(
-          apiEnv.then((value) => value.aplusPointUrl), path, query, headers);
-
-  CoreHttpClient aplusNeobank({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) {
-    final url = apiEnv.then((value) => value.aplusNeobankUrlKrakend);
-
-    return _buildClient(url, path, query, headers);
-  }
-
-  CoreHttpClient aplusSaving({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) =>
-      _buildClient(
-          apiEnv.then((value) => value.aplusSavingUrl), path, query, headers);
-
-  CoreHttpClient aplusMicroInvestment({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) =>
-      _buildClient(apiEnv.then((value) => value.aplusMicroInvestmentUrl), path,
-          query, headers);
-
-  CoreHttpClient aplusAutoDebit({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) {
-
-    final url = apiEnv.then((value) =>value.aplusAutoDebitUrlKrakend);
-
-    return _buildClient(url, path, query, headers);
-  }
-
-  CoreHttpClient ascoreKeycloak({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) =>
-      _buildClient(apiEnv.then((value) => value.ascoreKeycloakUrl), path, query,
-          headers);
-
-  CoreHttpClient ascore({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) =>
-      _buildClient(
-          apiEnv.then((value) => value.ascoreUrl), path, query, headers);
-
-  CoreHttpClient aplusModal({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) =>
-      _buildClient(
-          apiEnv.then((value) => value.aplusModalUrl), path, query, headers);
-
-  CoreHttpClient aplusModalService({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) =>
-      _buildClient(
-        apiEnv.then((value) => value.aplusModalUrlService),
-        path,
-        query,
-        headers,
-      );
-
-  CoreHttpClient goCustomer({
-    required String path,
-    Json? query,
-    Map<String, String>? headers,
-  }) =>
-      _buildClient(
-          apiEnv.then((value) => value.goCustomerUrl), path, query, headers);
 
   CoreHttpClient _buildClient(
     Future<String> url,
@@ -243,7 +65,7 @@ class CoreHttpBuilder {
         ..removeWhere((element) => element.isEmpty);
 
       final finalPath = finalSegments.join('/');
-      final uri = Uri.https(authority, finalPath, query);
+      final uri = Uri.http(authority, finalPath, query);
       return uri;
     });
 

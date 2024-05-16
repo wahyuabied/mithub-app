@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:alice/alice.dart';
 import 'package:alice/core/alice_http_extensions.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:mithub_app/core/di/service_locator.dart';
 import 'package:mithub_app/core/network/auth_interceptor.dart';
@@ -46,6 +47,7 @@ class CoreHttpClient {
           .post(uri, headers: _additionalHeaders, body: jsonEncode(body))
           .interceptWithAlice(_httpInspector)
           .onError((error, stackTrace) {
+            debugPrint(error.toString());
         throw NoConnectivityException();
       });
       return response;

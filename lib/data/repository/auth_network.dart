@@ -17,8 +17,8 @@ class AuthNetwork {
   static const _checkMitra = 'register/checkMitra';
 
   // Login
-  static const _userToken = 'user/token';
-  static const _userLogin = 'user/login';
+  static const _userToken = 'users/token';
+  static const _userLogin = 'users/login';
 
   // Profile
   static const _profileCheckPin = 'user/checkPin';
@@ -79,14 +79,12 @@ class AuthNetwork {
   Future<JsonResponse<PostUserLoginResponse>> postLogin(
       String phone,
       String pin,
-      String deviceUuid,
       ) async {
     final request = PostUserLoginRequest(
-      phone: phone,
+      phoneNumber: phone,
       pin: pin,
-      deviceUuid: deviceUuid,
     );
-    final response = await _http.aplus(path: _userLogin).post(request);
+    final response = await _http.localHost(path: _userLogin).post(request);
 
     return ApiResponse.json(response, PostUserLoginResponse.fromJson);
   }
