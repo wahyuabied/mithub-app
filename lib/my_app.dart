@@ -10,6 +10,8 @@ import 'package:mithub_app/core/event_bus/general_ui_event.dart';
 import 'package:mithub_app/core/notification/notification_data.dart';
 import 'package:mithub_app/core/notification/notification_route.dart';
 import 'package:mithub_app/core/routing/a_route.dart';
+import 'package:mithub_app/core/storage/core_secure_storage.dart';
+import 'package:mithub_app/data/repository/auth_repository.dart';
 import 'package:mithub_app/design/theme.dart';
 import 'package:mithub_app/routes/auth_routes.dart';
 import 'package:upgrader/upgrader.dart';
@@ -27,6 +29,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   final Alice httpInspector = serviceLocator.get();
   final ARouter aRouter = serviceLocator.get();
   final GlobalKey<NavigatorState> navigatorKey = serviceLocator.get();
+  final AuthRepository authRepository = serviceLocator.get();
   late StreamSubscription _notifStream;
 
   @override

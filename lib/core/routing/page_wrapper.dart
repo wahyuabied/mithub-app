@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mithub_app/core/di/service_locator.dart';
+import 'package:mithub_app/core/network/http_inspector.dart';
 
 /// Provide helper and utility function for debugging a page
 class PageWrapper extends StatelessWidget {
@@ -12,10 +14,11 @@ class PageWrapper extends StatelessWidget {
   });
 
   List<DebugAction> _getAction() {
+    final HttpInspector httpInspector = serviceLocator.get();
     return [
       DebugAction(
         title: 'Dev Ops',
-        action: (context) => null/*put route to devops here*/,
+        action: (context) => httpInspector.showInspector(),
       ),
     ];
   }

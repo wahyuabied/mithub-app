@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mithub_app/core/di/service_locator.dart';
 import 'package:mithub_app/core/network/core_http_repository.dart';
+import 'package:mithub_app/data/repository/auth_repository.dart';
 import 'package:mithub_app/design/colors.dart';
 import 'package:mithub_app/design/step_progress_indicator.dart';
 import 'package:mithub_app/design/theme_extension.dart';
@@ -13,11 +14,13 @@ import 'package:mithub_app/routes/auth_routes.dart';
 class OnboardingScreen extends StatefulWidget {
   final bool? activationPurpose;
   final String? code;
+  final bool? isLogin;
 
   const OnboardingScreen({
     super.key,
     this.activationPurpose = false,
     this.code,
+    this.isLogin
   });
 
   @override
@@ -28,16 +31,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int _currentPage = 0;
   late PageController _pageController;
   String appVersion = '';
+  final AuthRepository authRepository = serviceLocator.get();
 
   @override
   void initState() {
     super.initState();
-    getAppVersion();
-    _pageController = PageController();
-  }
-
-  void getAppVersion() async {
     appVersion = 'v1.0.0';
+      if(widget.isLogin ?? false){
+        if(mounted){
+          context?.goNamed(AuthRoutes.homepage.name!);
+        }
+      }
+    _pageController = PageController();
   }
 
   @override

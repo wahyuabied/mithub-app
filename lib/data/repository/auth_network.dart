@@ -19,6 +19,7 @@ class AuthNetwork {
   // Login
   static const _userToken = 'users/token';
   static const _userLogin = 'users/login';
+  static const _userInquiry = 'inquiry-account?account_number=4000000001';
 
   // Profile
   static const _profileCheckPin = 'user/checkPin';
@@ -90,7 +91,7 @@ class AuthNetwork {
   }
 
   Future<JsonResponse<PostUserProfileResponse>> getUserToken() async {
-    final response = await _http.aplus(path: _userToken).get();
+    final response = await _http.localHost(path: _userToken).get();
 
     return ApiResponse.json(response, PostUserProfileResponse.fromJson);
   }

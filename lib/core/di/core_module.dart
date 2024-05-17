@@ -10,6 +10,7 @@ import 'package:mithub_app/core/event_bus/event_bus.dart';
 import 'package:mithub_app/core/network/auth_interceptor.dart';
 import 'package:mithub_app/core/network/core_http_repository.dart';
 import 'package:mithub_app/core/network/http/core_http_builder.dart';
+import 'package:mithub_app/core/network/http_inspector.dart';
 import 'package:mithub_app/core/routing/a_route.dart';
 import 'package:mithub_app/core/storage/core_secure_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -18,8 +19,18 @@ import 'package:package_info_plus/package_info_plus.dart';
 // If the module become huge, we need to split this into several DI modules
 class CoreModule {
   GlobalKey<NavigatorState> navigatorKey() => GlobalKey();
+  HttpInspector aliceHttpInspector() {
+    return HttpInspector(
+      Alice(
+        navigatorKey: serviceLocator.get(),
+        showNotification: false,
+        showShareButton: true,
+        showInspectorOnShake: false,
+      ),
+    );
+  }
 
-  Alice aliceHttpInspector() {
+  Alice alice() {
     return Alice(
       navigatorKey: serviceLocator.get(),
       showNotification: false,
@@ -85,7 +96,10 @@ class CoreModule {
       await defaultHttpHeaders(),
       instanceName: _defaultHeaders,
     );
-    serviceLocator.registerSingleton<Alice>(aliceHttpInspector());
+    serviceLocator.registerSingleton<Alice>(alice());
+    serviceLocator.registerLazySingleton<HttpInspector>(
+          () => aliceHttpInspector(),
+    );
     serviceLocator.registerFactory<CoreHttpRepository>(
           () => coreHttpRepository(
         serviceLocator<CoreSecureStorage>(),

@@ -30,6 +30,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   alice: ^0.4.1
+  badges: ^3.1.2
   firebase_analytics: ^10.8.6
   firebase_app_installations: ^0.2.4+14
   firebase_core: ^2.25.4

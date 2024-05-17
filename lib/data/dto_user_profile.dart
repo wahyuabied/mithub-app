@@ -20,14 +20,14 @@ class PostUserProfileResponse {
   final Image? identityImage;
   @JsonKey(name: 'name')
   final String? name;
-  @JsonKey(name: 'phone')
+  @JsonKey(name: 'phone_number')
   final String? phone;
   @JsonKey(name: 'pin')
   final String? pin;
   @JsonKey(name: 'is_ibu_amanah')
   final bool? isIbuAmanah;
-  @JsonKey(name: 'is_mitra')
-  final bool? isMitra;
+  @JsonKey(name: 'is_agent')
+  final bool? isAgent;
   @JsonKey(name: 'email')
   final String? email;
   @JsonKey(name: 'can_access_saving')
@@ -94,7 +94,7 @@ class PostUserProfileResponse {
     this.phone,
     this.pin,
     this.isIbuAmanah,
-    this.isMitra,
+    this.isAgent,
     this.email,
     this.canAccessSaving,
     this.validatePhoneNumber,

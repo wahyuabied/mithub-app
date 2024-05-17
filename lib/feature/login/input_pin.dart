@@ -3,6 +3,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mithub_app/core/di/service_locator.dart';
 import 'package:mithub_app/data/repository/auth_repository.dart';
 import 'package:mithub_app/data/repository/core/login_result.dart';
@@ -159,27 +160,7 @@ class _InputPinScreenState extends State<InputPinScreen> {
     Navigator.pop(context);
 
     if (loginResult is ImmediateLogin) {
-      showModalBottomSheet<void>(
-        context: context,
-        backgroundColor: FunDsColors.white,
-        isScrollControlled: true,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(12.r),
-            topRight: Radius.circular(12.r),
-          ),
-        ),
-        builder: (BuildContext context) {
-          return ErrorDialog(
-            title: 'Success Lur',
-            subtitle:'Success',
-            imageAsset: 'assets/images/error_ibu_amanah_green.png',
-            primaryButtonText: 'Daftar Sekarang',
-            secondaryButtonText: 'Kembali',
-          );
-        },
-      );
-      // context.goNamed(HomepageRoutes.main.name!);
+      context.goNamed(AuthRoutes.homepage.name!);
     } else {
       showModalBottomSheet<void>(
         context: context,

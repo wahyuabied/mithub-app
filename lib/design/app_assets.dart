@@ -11,6 +11,20 @@ class AppAssets {
   static const icScanHomePage = '$imageDir/scan_navbar_icon.png';
   static const icProfileActive = '$imageDir/ic_nav_profile_active.svg';
   static const icProfileInactive = '$imageDir/ic_nav_profile_inactive.svg';
+  static const errorIbuAmanahWhistle = '$imageDir/error_ibu_amanah_whistle.png';
+  static const icDepositIcon = '$imageDir/deposit_icon.png';
+  static const icBelanja = '$imageDir/icon_belanja.png';
+  static const icPulsa = '$imageDir/icon_pulsa.png';
+  static const icPaketData = '$imageDir/icon_paket_data.png';
+  static const icListrik = '$imageDir/icon_listrik.png';
+  static const icBpjs = '$imageDir/icon_bpjs.png';
+  static const icPdam = '$imageDir/icon_pdam.png';
+  static const icEwallet = '$imageDir/icon_ewallet.png';
+  static const icTopUpGame = '$imageDir/icon_topup_game.png';
+  static const icCicilan = '$imageDir/icon_cicilan.png';
+  static const icPpobLainnya = '$imageDir/icon_lainnya.png';
+  static const icPoketPremiumStar = '$imageDir/ic_poket_premium_star.png';
+  static const icEwalletTransfer = '$imageDir/transfer_icon.png';
 
   static const imgOnboardingFirst = '$imageDir/img_calendar_onboarding.png';
   static const imgOnboardingTwo = '$imageDir/img_wallet_onboarding.png';
