@@ -187,9 +187,7 @@ class AuthRepository {
 
   Future<List<ContentMarketPlaceResponse>?> getContentMarketPlace(String keyword) async {
     var response = await _authNetwork.getListContentMarketPlace(keyword);
-    print(response.data?.length);
     if(response.isSuccess){
-      print(response.data?.length);
       return response.data;
     }else{
       return null;

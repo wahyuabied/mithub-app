@@ -1,23 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mithub_app/core/debouncer.dart';
 import 'package:mithub_app/design/colors.dart';
 import 'package:mithub_app/design/theme_extension.dart';
 import 'package:mithub_app/design/widget/app_bar.dart';
+import 'package:mithub_app/feature/marketplace/marketplace_viewmodel.dart';
+import 'package:mithub_app/utils/result.dart';
+import 'package:provider/provider.dart';
 
-class MarketplacePage extends StatefulWidget {
+class MarketplacePage extends StatelessWidget {
   const MarketplacePage({super.key});
 
   @override
-  State<MarketplacePage> createState() => _MarketplacePageState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<MarketplaceViewModel>(
+      create: (context) => MarketplaceViewModel()..onViewLoaded(),
+      child: const MarketplaceView(),
+    );
+  }
 }
 
-class _MarketplacePageState extends State<MarketplacePage> {
+class MarketplaceView extends StatefulWidget {
+  const MarketplaceView({super.key});
+
+  @override
+  State<MarketplaceView> createState() => _MarketplaceViewState();
+}
+
+class _MarketplaceViewState extends State<MarketplaceView> {
   final List<String> _options = ['All', 'My Product'];
   String _selectedOptions = 'All';
+  TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    var vm = context.watch<MarketplaceViewModel>();
     return Scaffold(
       appBar: textAppBar('MarketPlace'),
       floatingActionButton: _selectedOptions != 'All'
@@ -68,8 +86,13 @@ class _MarketplacePageState extends State<MarketplacePage> {
               width: 380,
               child: Center(
                 child: TextField(
-                  style: context.textTheme.titleMedium,
-                  onChanged: (value) {},
+                  controller: controller,
+                  style: context.textTheme.bodyLarge,
+                  onChanged: (value) {
+                    Debouncer(milliseconds: 800).run(() {
+                      vm.fetchData(keyword:controller.text.toString());
+                    });
+                  },
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(10),
                     filled: true,
@@ -100,7 +123,7 @@ class _MarketplacePageState extends State<MarketplacePage> {
                   mainAxisSpacing: 4.h,
                   crossAxisSpacing: 4.w,
                 ),
-                itemCount: 10,
+                itemCount: vm.listData.result.dataOrNull?.length,
                 itemBuilder: (context, index) {
                   return Card(
                     clipBehavior: Clip.antiAlias,
@@ -112,11 +135,11 @@ class _MarketplacePageState extends State<MarketplacePage> {
                             Expanded(
                               flex: 5,
                               child: Container(
-                                decoration: const BoxDecoration(
+                                decoration: BoxDecoration(
                                     image: DecorationImage(
                                   image: NetworkImage(
-                                    'https://pbs.twimg.com/media/BEctmM8CMAACKlo.jpg',
-                                  ),
+                                      'http://20.20.24.134:3000' +
+                                          (vm.listData.result.dataOrNull?[index].file?.path.toString() ?? '')),
                                   fit: BoxFit.fitWidth,
                                 )),
                               ),
@@ -126,15 +149,22 @@ class _MarketplacePageState extends State<MarketplacePage> {
                               child: Container(
                                 padding: const EdgeInsets.all(5),
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
                                   children: [
                                     Text(
-                                      "Kambing Gunung",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      vm.listData.result.dataOrNull?[index].name ??
+                                          '',
                                       style: context.textTheme.bodyLarge,
                                     ),
                                     Text(
-                                      'Rp5.000 ',
+                                      vm.listData.result.dataOrNull?[index].price
+                                          .toString() ??
+                                          '',
                                       style: context.textTheme.titleSmall
                                           ?.copyWith(
                                         color: FunDsColors.primaryBase,
@@ -143,8 +173,8 @@ class _MarketplacePageState extends State<MarketplacePage> {
                                     Text(
                                       textAlign: TextAlign.start,
                                       'Surabaya, 16Km',
-                                      style: context.textTheme.bodySmall
-                                          ?.copyWith(
+                                      style:
+                                          context.textTheme.bodySmall?.copyWith(
                                         color: FunDsColors.neutralTwo,
                                       ),
                                     ),

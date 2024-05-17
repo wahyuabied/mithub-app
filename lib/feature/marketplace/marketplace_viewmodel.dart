@@ -16,7 +16,7 @@ class MarketplaceViewModel extends ABaseChangeNotifier{
 
   void fetchData({String keyword = ''}) {
     Result.call(
-        future: _authRepository.getContentMarketPlace(''),
+        future: _authRepository.getContentMarketPlace(keyword),
         onResult: (result) {
           if(result.isSuccess){
             listData.setResult(Result.success(result.dataOrNull ?? []));

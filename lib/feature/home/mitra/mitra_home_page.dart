@@ -32,14 +32,13 @@ class _MitraHomePageKeepAlive extends State<MitraHomePage>
   void initState() {
     super.initState();
     final userProfile = context.read<HomepageViewModel>().userProfileResult;
-
     mitraHomeViewModel =
         MitraHomeViewModel(userProfile: userProfile.dataOrNull!)
           ..fetchData(false);
     pocketCardViewModel = PocketCardViewModel(
       context.read<HomepageViewModel>().userProfileResult.data,
-    );
-    marketplaceViewModel = MarketplaceViewModel()..fetchData();
+    )..fetchPocket();
+    marketplaceViewModel = MarketplaceViewModel()..onViewLoaded();
   }
 
   @override
@@ -67,6 +66,8 @@ class _MitraHomePageKeepAlive extends State<MitraHomePage>
   @override
   void dispose() {
     mitraHomeViewModel.dispose();
+    pocketCardViewModel.dispose();
+    marketplaceViewModel.dispose();
     super.dispose();
   }
 
@@ -80,8 +81,7 @@ class _MitraHomeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var vm = context.read<MarketplaceViewModel>();
-
+    var vm = context.watch<MarketplaceViewModel>();
     return PageResume(
       onResume: () {
         context.read<MitraHomeViewModel>().fetchData(true);
