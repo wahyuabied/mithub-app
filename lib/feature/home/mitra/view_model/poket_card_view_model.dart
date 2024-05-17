@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:mithub_app/core/state_management/a_base_change_notifier.dart';
 import 'package:mithub_app/data/user_profile.dart';
 import 'package:mithub_app/feature/home/mitra/section/poket_data.dart';
@@ -6,9 +5,8 @@ import 'package:mithub_app/utils/result.dart';
 
 class PocketCardViewModel extends ABaseChangeNotifier {
   final UserProfile userProfile;
-  final BuildContext context;
 
-  PocketCardViewModel(this.userProfile, this.context);
+  PocketCardViewModel(this.userProfile);
 
   final ResultState<PocketCardData> _pocketCardData = ResultState(
     useLastDataOnError: true,
@@ -16,7 +14,7 @@ class PocketCardViewModel extends ABaseChangeNotifier {
 
   Result<PocketCardData> get pocketResult => _pocketCardData.result;
 
-  bool get isVisible => userProfile.isAvailableEwallet;
+  bool get isVisible => true;
 
   bool get isActive {
     final lastData = _pocketCardData.lastData;
@@ -39,7 +37,6 @@ class PocketCardViewModel extends ABaseChangeNotifier {
     return lastData.isWalletEntryVisible;
   }
 
-
   PocketState get pocketState {
     if (!isVisible) {
       return HiddenPocketState();
@@ -56,19 +53,41 @@ class PocketCardViewModel extends ABaseChangeNotifier {
         if (lastData != null) {
           return _emitPocketState(lastData);
         }
-
         return ShimmerPocketState();
       case Success<PocketCardData>():
         return _emitPocketState(result.data);
     }
   }
 
+  void fetchPocket() {
+    Result.call(
+      future: _internalFetchPocket(),
+      onResult: (result) {
+        _pocketCardData.setResult(result);
+        notifyListeners();
+      },
+      onSuccess: (data){
+        notifyListeners();
+      }
+    );
+  }
+
+  Future<PocketCardData> _internalFetchPocket() async {
+    return PocketCardData(
+      userProfile: userProfile,
+      isWalletActive: true,
+      isWalletRegistered: true,
+      isWalletPremium: true,
+      isWalletEntryVisible: true,
+      amount: '2000',
+      currency: '',
+      hasPIN: true,
+      webview: '',
+    );
+  }
+
   PocketState _emitPocketState(PocketCardData pocketCardData) {
-    if (pocketCardData.isWalletRegistered && pocketCardData.isWalletActive) {
-      return ActivePocketState(pocketCardData);
-    } else {
-      return InactivePocketState(pocketCardData);
-    }
+    return ActivePocketState(pocketCardData);
   }
 
   @override
@@ -121,16 +140,4 @@ final class ActivePocketState implements PocketState {
   PocketCardData pocketCardData;
 
   ActivePocketState(this.pocketCardData);
-}
-
-final class InactivePocketState implements PocketState {
-  PocketCardData pocketCardData;
-
-  InactivePocketState(this.pocketCardData);
-}
-
-final class FrozenPocketState implements PocketState {
-  PocketCardData pocketCardData;
-
-  FrozenPocketState(this.pocketCardData);
 }

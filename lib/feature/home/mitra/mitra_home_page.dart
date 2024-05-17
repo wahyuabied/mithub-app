@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mithub_app/design/colors.dart';
+import 'package:mithub_app/design/theme_extension.dart';
 import 'package:mithub_app/feature/home/homepage_view_model.dart';
 import 'package:mithub_app/feature/home/mitra/section/appbar_homepage.dart';
 import 'package:mithub_app/feature/home/mitra/section/menu_ppob_section.dart';
+import 'package:mithub_app/feature/home/mitra/section/poket_card.dart';
 import 'package:mithub_app/feature/home/mitra/view_model/mitra_home_view_model.dart';
+import 'package:mithub_app/feature/home/mitra/view_model/poket_card_view_model.dart';
 import 'package:mithub_app/utils/page_resume.dart';
 import 'package:mithub_app/utils/result.dart';
 import 'package:provider/provider.dart';
@@ -18,14 +22,19 @@ class MitraHomePage extends StatefulWidget {
 class _MitraHomePageKeepAlive extends State<MitraHomePage>
     with AutomaticKeepAliveClientMixin {
   late final MitraHomeViewModel mitraHomeViewModel;
+  late final PocketCardViewModel pocketCardViewModel;
 
   @override
   void initState() {
     super.initState();
     final userProfile = context.read<HomepageViewModel>().userProfileResult;
 
-    mitraHomeViewModel = MitraHomeViewModel(userProfile: userProfile.dataOrNull!)
-      ..fetchData(false);
+    mitraHomeViewModel =
+        MitraHomeViewModel(userProfile: userProfile.dataOrNull!)
+          ..fetchData(false);
+    pocketCardViewModel = PocketCardViewModel(
+      context.read<HomepageViewModel>().userProfileResult.data,
+    );
   }
 
   @override
@@ -36,6 +45,9 @@ class _MitraHomePageKeepAlive extends State<MitraHomePage>
       providers: [
         ChangeNotifierProvider<MitraHomeViewModel>.value(
           value: mitraHomeViewModel,
+        ),
+        ChangeNotifierProvider<PocketCardViewModel>.value(
+          value: pocketCardViewModel,
         ),
       ],
       builder: (context, child) {
@@ -63,6 +75,7 @@ class _MitraHomeContent extends StatelessWidget {
     return PageResume(
       onResume: () {
         context.read<MitraHomeViewModel>().fetchData(true);
+        context.read<PocketCardViewModel>().fetchPocket();
       },
       child: Scaffold(
         appBar: AppBarHomepage(
@@ -72,11 +85,12 @@ class _MitraHomeContent extends StatelessWidget {
         body: RefreshIndicator.adaptive(
           onRefresh: () async {
             context.read<MitraHomeViewModel>().fetchData(true);
+            context.read<PocketCardViewModel>().fetchPocket();
           },
           child: ListView(
             scrollDirection: Axis.vertical,
             children: [
-              // const PocketCard(),
+              const PocketCard(),
               SizedBox(height: 8.h),
               _SectionContainer(
                 child: Column(
@@ -94,12 +108,97 @@ class _MitraHomeContent extends StatelessWidget {
                               source: 'homepage',
                               isAgent: context
                                   .watch<MitraHomeViewModel>()
-                                  .userProfile.isAgent),
+                                  .userProfile
+                                  .isAgent),
                           SizedBox(height: 20.h),
                         ],
                       ),
                     ),
                   ],
+                ),
+              ),
+              SizedBox(height: 8.h),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 8.0,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'MarketPlace',
+                      style: context.textTheme.titleMedium,
+                    ),
+                    InkWell(
+                      onTap: (){
+
+                      },
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        color: FunDsColors.primaryBase,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Lihat Semua',
+                            style: context.textTheme.titleSmall
+                                ?.copyWith(color: FunDsColors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: SizedBox(
+                  height: 180.h,
+                  width: 120.w,
+                  child: ListView.builder(
+                      physics: const ClampingScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 4,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Image.network(
+                                fit: BoxFit.fill,
+                                'https://pbs.twimg.com/media/BEctmM8CMAACKlo.jpg',
+                                width: 120.w,
+                                height: 140,
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 4.0, top: 8.0),
+                                child: Text(
+                                  maxLines: 1,
+                                  'Kambing',
+                                  style: context.textTheme.titleMedium,
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 4.0, top: 8.0),
+                                child: Text(
+                                  'Rp5.0000',
+                                  style: context.textTheme.titleSmall?.copyWith(
+                                    color: FunDsColors.primaryBase,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
                 ),
               ),
             ],
