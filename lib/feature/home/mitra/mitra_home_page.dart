@@ -179,7 +179,7 @@ class _MitraHomeContent extends StatelessWidget {
                             final id = vm.listData.result.dataOrNull?[index].id;
                             context.pushNamed(
                                 AuthRoutes.marketplaceDetailPage.name!,
-                                extra: id.toString());
+                                extra: id);
                           },
                           child: Card(
                             shape: RoundedRectangleBorder(

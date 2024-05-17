@@ -5,6 +5,7 @@ import 'package:mithub_app/core/network/http/core_http_builder.dart';
 import 'package:mithub_app/data/dto_check_mitra.dart';
 import 'package:mithub_app/data/dto_check_pin.dart';
 import 'package:mithub_app/data/dto_check_register_phone.dart';
+import 'package:mithub_app/data/dto_content_detail_marketplace_response.dart';
 import 'package:mithub_app/data/dto_content_marketplace.dart';
 import 'package:mithub_app/data/dto_fcm_token.dart';
 import 'package:mithub_app/data/dto_user_inquiry_response.dart';
@@ -24,6 +25,7 @@ class AuthNetwork {
   static const _userLogin = 'users/login';
   static const _userInquiry = 'wallets/inquiry-account';
   static const _marketPlace = 'products';
+  static const _marketPlaceDetail = 'products/';
 
   // Profile
   static const _profileCheckPin = 'user/checkPin';
@@ -163,5 +165,11 @@ class AuthNetwork {
     final response =
         await _http.localHostApp(path: _marketPlace, query: query).get();
     return ApiResponse.jsonList(response, ContentMarketPlaceResponse.fromMap);
+  }
+
+  Future<JsonResponse<ContentDetailMarketPlace>> getContentMarketPlace(int id) async {
+    final response =
+    await _http.localHostApp(path: _marketPlaceDetail+id.toString()).get();
+    return ApiResponse.json(response, ContentDetailMarketPlace.fromMap);
   }
 }

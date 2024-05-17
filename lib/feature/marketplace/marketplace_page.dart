@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mithub_app/core/debouncer.dart';
 import 'package:mithub_app/design/colors.dart';
 import 'package:mithub_app/design/theme_extension.dart';
 import 'package:mithub_app/design/widget/app_bar.dart';
 import 'package:mithub_app/feature/marketplace/marketplace_viewmodel.dart';
+import 'package:mithub_app/routes/auth_routes.dart';
 import 'package:mithub_app/utils/result.dart';
 import 'package:provider/provider.dart';
 
@@ -125,64 +127,72 @@ class _MarketplaceViewState extends State<MarketplaceView> {
                 ),
                 itemCount: vm.listData.result.dataOrNull?.length,
                 itemBuilder: (context, index) {
-                  return Card(
-                    clipBehavior: Clip.antiAlias,
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 5,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                  image: NetworkImage(
-                                      'http://20.20.24.134:3000' +
-                                          (vm.listData.result.dataOrNull?[index].file?.path.toString() ?? '')),
-                                  fit: BoxFit.fitWidth,
-                                )),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 3,
-                              child: Container(
-                                padding: const EdgeInsets.all(5),
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Text(
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      vm.listData.result.dataOrNull?[index].name ??
-                                          '',
-                                      style: context.textTheme.bodyLarge,
-                                    ),
-                                    Text(
-                                      vm.listData.result.dataOrNull?[index].price
-                                          .toString() ??
-                                          '',
-                                      style: context.textTheme.titleSmall
-                                          ?.copyWith(
-                                        color: FunDsColors.primaryBase,
-                                      ),
-                                    ),
-                                    Text(
-                                      textAlign: TextAlign.start,
-                                      'Surabaya, 16Km',
-                                      style:
-                                          context.textTheme.bodySmall?.copyWith(
-                                        color: FunDsColors.neutralTwo,
-                                      ),
-                                    ),
-                                  ],
+                  return InkWell(
+                    onTap: (){
+                      final id = vm.listData.result.dataOrNull?[index].id;
+                      context.pushNamed(
+                          AuthRoutes.marketplaceDetailPage.name!,
+                          extra: id);
+                    },
+                    child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 5,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                    image: NetworkImage(
+                                        'http://20.20.24.134:3000' +
+                                            (vm.listData.result.dataOrNull?[index].file?.path.toString() ?? '')),
+                                    fit: BoxFit.fitWidth,
+                                  )),
                                 ),
                               ),
-                            ),
-                          ]),
+                              Expanded(
+                                flex: 3,
+                                child: Container(
+                                  padding: const EdgeInsets.all(5),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Text(
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        vm.listData.result.dataOrNull?[index].name ??
+                                            '',
+                                        style: context.textTheme.bodyLarge,
+                                      ),
+                                      Text(
+                                        vm.listData.result.dataOrNull?[index].price
+                                            .toString() ??
+                                            '',
+                                        style: context.textTheme.titleSmall
+                                            ?.copyWith(
+                                          color: FunDsColors.primaryBase,
+                                        ),
+                                      ),
+                                      Text(
+                                        textAlign: TextAlign.start,
+                                        'Surabaya, 16Km',
+                                        style:
+                                            context.textTheme.bodySmall?.copyWith(
+                                          color: FunDsColors.neutralTwo,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ]),
+                      ),
                     ),
                   );
                 }),

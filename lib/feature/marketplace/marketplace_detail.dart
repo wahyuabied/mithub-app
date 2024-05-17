@@ -7,18 +7,32 @@ import 'package:mithub_app/design/app_assets.dart';
 import 'package:mithub_app/design/colors.dart';
 import 'package:mithub_app/design/theme_extension.dart';
 import 'package:mithub_app/design/widget/common_dialog.dart';
+import 'package:mithub_app/feature/marketplace/marketplace_detail_viewmodel.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-class MarketplaceDetail extends StatelessWidget {
-  final String? productId;
-
+class MarketplaceDetail extends StatelessWidget{
   const MarketplaceDetail({
     super.key,
     required this.productId,
   });
+  final int productId;
 
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider<MarketplaceDetailViewModel>(
+      create: (context) => MarketplaceDetailViewModel()..onViewLoaded(productId),
+      child: _MarketplaceDetailView(),
+    );
+  }
+
+}
+
+class _MarketplaceDetailView extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    var vm = context.watch<MarketplaceDetailViewModel>();
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -53,18 +67,18 @@ class MarketplaceDetail extends StatelessWidget {
                 child: Column(
                   children: [
                     Image.network(
-                      'https://pbs.twimg.com/media/BEctmM8CMAACKlo.jpg',
+                      'http://20.20.24.134:3000' + (vm.data.lastData?.file?.path ?? ''),
                       height: 200.h,
                     ),
                     SizedBox(height: 16.h),
-                    HtmlWidget('deskirpsi'),
+                    HtmlWidget(vm.data.lastData?.description ?? ''),
                   ],
                 ),
               ),
             ),
             InkWell(
               onTap: () {
-                _generateQrCode(context, '11', '081232801011');
+                _generateQrCode(context, (vm.data.lastData?.id ?? 0).toString(), vm.data.lastData?.borrower?.phoneNumber ?? '');
               },
               child: Container(
                 width: double.infinity,
