@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mithub_app/core/di/service_locator.dart';
@@ -11,6 +10,9 @@ import 'package:mithub_app/feature/home/homepage.dart';
 import 'package:mithub_app/feature/login/input_pin.dart';
 import 'package:mithub_app/feature/login/login.dart';
 import 'package:mithub_app/feature/onboarding/onboarding_screen.dart';
+import 'package:mithub_app/feature/scanner/qr_generator_page.dart';
+import 'package:mithub_app/feature/scanner/qr_scanner.dart';
+import 'package:mithub_app/feature/scanner/qr_scanner_provider.dart';
 
 class AuthRoutes {
   AuthRoutes._();
@@ -19,7 +21,9 @@ class AuthRoutes {
     onboarding,
     login,
     inputPin,
-    main
+    main,
+    qrScanner,
+    qrGeneratorPage,
   ];
 
   static final onboarding = GoRoute(
@@ -31,7 +35,7 @@ class AuthRoutes {
         future: serviceLocator<AuthRepository>().isLoggedIn(),
         builder: (BuildContext c, AsyncSnapshot<bool> s) {
           if (s.connectionState == ConnectionState.done) {
-              return OnboardingScreen(isLogin: s.requireData);
+            return OnboardingScreen(isLogin: s.requireData);
           } else {
             return const Scaffold(body: LoadingDialog());
           }
@@ -89,6 +93,47 @@ class AuthRoutes {
       );
     },
   );
+
+  static final qrScanner = GoRoute(
+      path: '/qrScanner',
+      name: 'QrScanner',
+      pageBuilder: (context, state) {
+        final extra = state.extra != null
+            ? state.extra as QrScannerExtra
+            : QrScannerExtra();
+        return APage(
+          key: state.pageKey,
+          child: QrScanner(
+            onScanned: extra.onScanned,
+            isTransaction: extra.isTransaction,
+          ),
+        );
+      });
+
+  static final qrGeneratorPage = GoRoute(
+      path: '/qrGeneratorPage',
+      name: 'Qr Generator',
+      pageBuilder: (context, state) {
+        return APage(
+          key: state.pageKey,
+          child: const QrGeneratorPage(),
+        );
+      });
+
+// static final qrPayment = GoRoute(
+//     path: '/qrPayment',
+//     name: 'Qr Payment Confirmation',
+//     pageBuilder: (context, state) {
+//       final extra = state.extra as QrPaymentExtra;
+//       return APage(
+//         key: state.pageKey,
+//         child: PaymentConfirmationScreen(
+//           data: extra.data,
+//           balance: extra.balance,
+//           phoneNo: extra.phoneNo,
+//         ),
+//       );
+//     });
 }
 
 class AuthPurpose {

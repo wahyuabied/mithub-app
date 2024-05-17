@@ -12,6 +12,8 @@ import 'package:mithub_app/design/widget/error_loading_dialog.dart';
 import 'package:mithub_app/design/widget/loading_dialog.dart';
 import 'package:mithub_app/feature/home/homepage_view_model.dart';
 import 'package:mithub_app/feature/home/mitra/mitra_home_page.dart';
+import 'package:mithub_app/feature/scanner/qr_scanner.dart';
+import 'package:mithub_app/feature/scanner/qr_scanner_provider.dart';
 import 'package:mithub_app/routes/auth_routes.dart';
 import 'package:mithub_app/utils/result.dart';
 import 'package:mithub_app/utils/result_builder.dart';
@@ -113,7 +115,7 @@ class _HomepageContentState extends State<_HomepageContent> {
             children: [
               // if the order of one of these screen changed, make sure
               const MitraHomePage(),
-              const SizedBox.shrink(),
+              const QrScanner(),
               const SizedBox.shrink(),
             ],
             onPageChanged: (value) {
@@ -164,10 +166,10 @@ class _HomepageContentState extends State<_HomepageContent> {
         ],
         type: BottomNavigationBarType.fixed,
         selectedLabelStyle:
-        context.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),
+            context.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),
         selectedItemColor: FunDsColors.primaryBase,
         unselectedLabelStyle:
-        context.textTheme.bodySmall?.copyWith(fontSize: 10.sp),
+            context.textTheme.bodySmall?.copyWith(fontSize: 10.sp),
         unselectedItemColor: FunDsColors.primaryBase200,
         showUnselectedLabels: true,
         onTap: (index) {
@@ -187,12 +189,8 @@ class _HomepageContentState extends State<_HomepageContent> {
       return;
     }
 
-    if (index == 1 &&
-        !userProfile.isInitialOrLoading &&
-        userProfile.dataOrNull?.isAgent != true) {
-      showBlockedFeatureDialog(context);
-    } else if (showScanMenu && index == 2) {
-      // _openQrScanner(context);
+    if (index == 1) {
+      _openQrScanner(context);
     } else {
       context.goNamed(
         AuthRoutes.homepage.name!,
@@ -203,47 +201,15 @@ class _HomepageContentState extends State<_HomepageContent> {
     }
   }
 
-  /*void _openQrScanner(BuildContext context) async {
-    if (Platform.isAndroid) {
-      final androidSdkVersion = await PlatformInformation.androidSdkInt;
-      if (context.mounted) {
-        if (androidSdkVersion >= 24) {
-          var extra = QrScannerExtra(
-            isTransaction: true,
-          );
-          await context.pushNamed(
-            QrScannerRoutes.qrScanner.name!,
-            extra: extra,
-          );
-        } else {
-          await showCommonBottomSheet(
-              context: context,
-              isDismissible: false,
-              builder: (ctx) {
-                return ErrorDialog(
-                    title: ctx.locale().sorry_feature_blocked_title,
-                    subtitle: ctx.locale().sorry_feature_blocked_desc,
-                    imageAsset: AppAssets.errorIbuAmanahWhistle,
-                    primaryButtonText: ctx.locale().understood,
-                    secondaryButtonText: '',
-                    showButtonSecondary: false,
-                    centerTitle: false,
-                    onClickPrimary: () {
-                      Navigator.pop(ctx);
-                    });
-              });
-        }
-      }
-    } else {
-      var extra = QrScannerExtra(
-        isTransaction: true,
-      );
-      await context.pushNamed(
-        QrScannerRoutes.qrScanner.name!,
-        extra: extra,
-      );
-    }
-  }*/
+  void _openQrScanner(BuildContext context) async {
+    var extra = QrScannerExtra(
+      isTransaction: true,
+    );
+    await context.pushNamed(
+      AuthRoutes.qrScanner.name!,
+      extra: extra,
+    );
+  }
 
   Future showBlockedFeatureDialog(BuildContext context) {
     return showModalBottomSheet<void>(
@@ -259,7 +225,8 @@ class _HomepageContentState extends State<_HomepageContent> {
       builder: (BuildContext context) {
         return const ErrorDialog(
           title: 'Mohon Maaf',
-          subtitle:'Fitur ini hanya tersedia untuk Mitra Amartha, Hubungi Amartha Care untuk tahu caranya',
+          subtitle:
+              'Fitur ini hanya tersedia untuk Mitra Amartha, Hubungi Amartha Care untuk tahu caranya',
           imageAsset: AppAssets.errorIbuAmanahWhistle,
           primaryButtonText: 'WA Amartha',
           secondaryButtonText: 'Kembali',
