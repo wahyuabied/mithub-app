@@ -8,6 +8,8 @@ import 'package:mithub_app/core/network/core_http_repository.dart';
 import 'package:mithub_app/core/storage/core_secure_storage.dart';
 import 'package:mithub_app/data/dto_check_mitra.dart';
 import 'package:mithub_app/data/dto_check_pin.dart';
+import 'package:mithub_app/data/dto_content_marketplace.dart';
+import 'package:mithub_app/data/dto_user_inquiry_response.dart';
 import 'package:mithub_app/data/repository/auth_network.dart';
 import 'package:mithub_app/data/repository/core/login_result.dart';
 import 'package:mithub_app/data/repository/core/response_extension.dart';
@@ -173,4 +175,25 @@ class AuthRepository {
   Future<void> clear() async {
     await _secureStorage.deleteData(mitraAccountKey);
   }
+
+  Future<UserInquiryResponse?> getInquiry() async {
+    var response = await _authNetwork.getInquiry();
+    if(response.isSuccess){
+      return response.data;
+    }else{
+      return null;
+    }
+  }
+
+  Future<List<ContentMarketPlaceResponse>?> getContentMarketPlace(String keyword) async {
+    var response = await _authNetwork.getListContentMarketPlace(keyword);
+    print(response.data?.length);
+    if(response.isSuccess){
+      print(response.data?.length);
+      return response.data;
+    }else{
+      return null;
+    }
+  }
+
 }

@@ -9,6 +9,7 @@ import 'package:mithub_app/design/widget/loading_dialog.dart';
 import 'package:mithub_app/feature/home/homepage.dart';
 import 'package:mithub_app/feature/login/input_pin.dart';
 import 'package:mithub_app/feature/login/login.dart';
+import 'package:mithub_app/feature/marketplace/marketplace_page.dart';
 import 'package:mithub_app/feature/marketplace/marketplace_detail.dart';
 import 'package:mithub_app/feature/onboarding/onboarding_screen.dart';
 import 'package:mithub_app/feature/payment/payment_page.dart';
@@ -26,6 +27,7 @@ class AuthRoutes {
     main,
     qrScanner,
     qrGeneratorPage,
+    marketPlace,
     marketplaceDetailPage,
     paymentPage,
   ];
@@ -121,6 +123,16 @@ class AuthRoutes {
         return APage(
           key: state.pageKey,
           child: const QrGeneratorPage(),
+        );
+      });
+
+  static final marketPlace = GoRoute(
+      path: '/marketPlace',
+      name: 'MarketPlace',
+      pageBuilder: (context, state) {
+        return APage(
+          key: state.pageKey,
+          child: const MarketplacePage(),
         );
       });
 

@@ -39,6 +39,21 @@ class CoreHttpBuilder {
     );
   }
 
+  CoreHttpClient localHostApp({
+    required String path,
+    Json? query,
+    Map<String, String>? headers,
+  }) {
+    final url = apiEnv.then((value) => value.localHostApp);
+
+    return _buildClient(
+      url,
+      path,
+      query,
+      headers,
+    );
+  }
+
   CoreHttpClient aplus({
     required String path,
     Json? query,

@@ -5,10 +5,13 @@ import 'package:mithub_app/core/network/http/core_http_builder.dart';
 import 'package:mithub_app/data/dto_check_mitra.dart';
 import 'package:mithub_app/data/dto_check_pin.dart';
 import 'package:mithub_app/data/dto_check_register_phone.dart';
+import 'package:mithub_app/data/dto_content_marketplace.dart';
 import 'package:mithub_app/data/dto_fcm_token.dart';
+import 'package:mithub_app/data/dto_user_inquiry_response.dart';
 import 'package:mithub_app/data/dto_user_login.dart';
 import 'package:mithub_app/data/dto_user_profile.dart';
 import 'package:mithub_app/data/repository/core/api_response.dart';
+import 'package:mithub_app/data/repository/core/json_list_response.dart';
 import 'package:mithub_app/data/repository/core/json_response.dart';
 import 'package:mithub_app/data/repository/core/scalar_response.dart';
 
@@ -19,7 +22,8 @@ class AuthNetwork {
   // Login
   static const _userToken = 'users/token';
   static const _userLogin = 'users/login';
-  static const _userInquiry = 'inquiry-account?account_number=4000000001';
+  static const _userInquiry = 'wallets/inquiry-account';
+  static const _marketPlace = 'products';
 
   // Profile
   static const _profileCheckPin = 'user/checkPin';
@@ -39,22 +43,21 @@ class AuthNetwork {
     var param = {'update_type': typeUpdate};
     final response = await _http
         .aplus(
-      path: _validateRequestUpdate,
-      query: param,
-    )
+          path: _validateRequestUpdate,
+          query: param,
+        )
         .get();
     return ApiResponse(response);
   }
-
 
   Future<JsonResponse<PostCheckMitraResponse>> postCheckMitra({
     required int mitraId,
   }) async {
     final response = await _http.aplus(path: _checkMitra).post(
-      PostCheckMitraRequest(
-        mitraId: mitraId,
-      ),
-    );
+          PostCheckMitraRequest(
+            mitraId: mitraId,
+          ),
+        );
 
     final apiResponse = ApiResponse.json(
       response,
@@ -64,23 +67,22 @@ class AuthNetwork {
     return apiResponse;
   }
 
-
   Future<JsonResponse<PostCheckRegisterPhoneResponse>> postCheckRegisterPhone(
-      String phone,
-      ) async {
+    String phone,
+  ) async {
     final response = await _http.aplus(path: _checkRegisterPhone).post(
-      PostCheckRegisterPhoneRequest(
-        phone: phone,
-      ),
-    );
+          PostCheckRegisterPhoneRequest(
+            phone: phone,
+          ),
+        );
     log(jsonEncode(response.body));
     return ApiResponse.json(response, PostCheckRegisterPhoneResponse.fromJson);
   }
 
   Future<JsonResponse<PostUserLoginResponse>> postLogin(
-      String phone,
-      String pin,
-      ) async {
+    String phone,
+    String pin,
+  ) async {
     final request = PostUserLoginRequest(
       phoneNumber: phone,
       pin: pin,
@@ -111,12 +113,12 @@ class AuthNetwork {
     required String version,
   }) async {
     final response = await _http.aplus(path: _fcmToken).post(
-      PostFcmTokenRequest(
-        token: token,
-        type: platform,
-        version: version,
-      ),
-    );
+          PostFcmTokenRequest(
+            token: token,
+            type: platform,
+            version: version,
+          ),
+        );
 
     return ApiResponse.scalar(response);
   }
@@ -125,11 +127,10 @@ class AuthNetwork {
   /// return db table user_fcm_tokens id [int] or null
   Future<ScalarResponse<int>> deleteFcmToken(String token) async {
     final response =
-    await _http.aplus(path: '$_deleteFcmToken/$token').delete();
+        await _http.aplus(path: '$_deleteFcmToken/$token').delete();
 
     return ApiResponse.scalar(response);
   }
-
 
   Future<JsonResponse<PostCheckPinRequest>> checkPin(
       {required String pin}) async {
@@ -145,5 +146,22 @@ class AuthNetwork {
     );
 
     return apiResponse;
+  }
+
+  Future<JsonResponse<UserInquiryResponse>> getInquiry() async {
+    final response = await _http.localHostApp(path: _userInquiry).get();
+    return ApiResponse.json(response, UserInquiryResponse.fromMap);
+  }
+
+  Future<JsonListResponse<ContentMarketPlaceResponse>>
+      getListContentMarketPlace(String keyword) async {
+    var query = {
+      'page': 1.toString(),
+      'limit':10.toString(),
+      'search':keyword
+    };
+    final response =
+        await _http.localHostApp(path: _marketPlace, query: query).get();
+    return ApiResponse.jsonList(response, ContentMarketPlaceResponse.fromMap);
   }
 }

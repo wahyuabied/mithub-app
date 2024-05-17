@@ -1,10 +1,13 @@
+import 'package:mithub_app/core/di/service_locator.dart';
 import 'package:mithub_app/core/state_management/a_base_change_notifier.dart';
+import 'package:mithub_app/data/repository/auth_repository.dart';
 import 'package:mithub_app/data/user_profile.dart';
 import 'package:mithub_app/feature/home/mitra/section/poket_data.dart';
 import 'package:mithub_app/utils/result.dart';
 
 class PocketCardViewModel extends ABaseChangeNotifier {
   final UserProfile userProfile;
+  final AuthRepository authRepository = serviceLocator.get();
 
   PocketCardViewModel(this.userProfile);
 
@@ -43,6 +46,7 @@ class PocketCardViewModel extends ABaseChangeNotifier {
     }
 
     final result = _pocketCardData.result;
+    print(result);
     switch (result) {
       case Initial<PocketCardData>():
         return ShimmerPocketState();
@@ -73,14 +77,15 @@ class PocketCardViewModel extends ABaseChangeNotifier {
   }
 
   Future<PocketCardData> _internalFetchPocket() async {
+    var data = await authRepository.getInquiry();
     return PocketCardData(
       userProfile: userProfile,
       isWalletActive: true,
       isWalletRegistered: true,
       isWalletPremium: true,
       isWalletEntryVisible: true,
-      amount: '2000',
-      currency: '',
+      amount: data?.availableBalance,
+      currency: 'IDR',
       hasPIN: true,
       webview: '',
     );

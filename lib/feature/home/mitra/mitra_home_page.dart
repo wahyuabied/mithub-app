@@ -9,6 +9,8 @@ import 'package:mithub_app/feature/home/mitra/section/menu_ppob_section.dart';
 import 'package:mithub_app/feature/home/mitra/section/poket_card.dart';
 import 'package:mithub_app/feature/home/mitra/view_model/mitra_home_view_model.dart';
 import 'package:mithub_app/feature/home/mitra/view_model/poket_card_view_model.dart';
+import 'package:mithub_app/feature/marketplace/marketplace_viewmodel.dart';
+import 'package:mithub_app/routes/auth_routes.dart';
 import 'package:mithub_app/routes/auth_routes.dart';
 import 'package:mithub_app/utils/page_resume.dart';
 import 'package:mithub_app/utils/result.dart';
@@ -74,10 +76,13 @@ class _MitraHomeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var vm = context.read<MarketplaceViewModel>();
+
     return PageResume(
       onResume: () {
         context.read<MitraHomeViewModel>().fetchData(true);
         context.read<PocketCardViewModel>().fetchPocket();
+        context.read<MarketplaceViewModel>().fetchData();
       },
       child: Scaffold(
         appBar: AppBarHomepage(
@@ -88,6 +93,7 @@ class _MitraHomeContent extends StatelessWidget {
           onRefresh: () async {
             context.read<MitraHomeViewModel>().fetchData(true);
             context.read<PocketCardViewModel>().fetchPocket();
+            context.read<MarketplaceViewModel>().fetchData();
           },
           child: ListView(
             scrollDirection: Axis.vertical,
@@ -133,7 +139,9 @@ class _MitraHomeContent extends StatelessWidget {
                       style: context.textTheme.titleMedium,
                     ),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        context.pushNamed(AuthRoutes.marketPlace.name!);
+                      },
                       child: Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.r),
@@ -163,46 +171,50 @@ class _MitraHomeContent extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       itemCount: 4,
                       itemBuilder: (BuildContext context, int index) {
-                        return InkWell(
-                          onTap: () {
-                            context.pushNamed(
-                                AuthRoutes.marketplaceDetailPage.name!);
-                          },
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Image.network(
-                                  fit: BoxFit.fill,
-                                  'https://pbs.twimg.com/media/BEctmM8CMAACKlo.jpg',
-                                  width: 120.w,
-                                  height: 140,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 4.0, top: 8.0),
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Image.network(
+                                fit: BoxFit.fill,
+                                'http://20.20.24.134:3000' +
+                                    (vm.listData.result.dataOrNull?[index].file
+                                            ?.path
+                                            .toString() ??
+                                        ''),
+                                width: 120.w,
+                                height: 140,
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 4.0, top: 8.0),
+                                child: SizedBox(
+                                  width: 120,
                                   child: Text(
+                                    overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
-                                    'Kambing',
+                                    vm.listData.result.dataOrNull?[index].name ??
+                                        '',
                                     style: context.textTheme.titleMedium,
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 4.0, top: 8.0),
-                                  child: Text(
-                                    'Rp5.0000',
-                                    style:
-                                        context.textTheme.titleSmall?.copyWith(
-                                      color: FunDsColors.primaryBase,
-                                    ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 4.0, top: 8.0),
+                                child: Text(
+                                  vm.listData.result.dataOrNull?[index].price
+                                          .toString() ??
+                                      '',
+                                  style: context.textTheme.titleSmall?.copyWith(
+                                    color: FunDsColors.primaryBase,
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         );
                       }),
