@@ -231,7 +231,6 @@ class _QrScannerState extends State<QrScanner> {
     if (rawResult.length == 3) {
       final productId = rawResult[1];
       final customerNumber = rawResult[2];
-      debugPrint('aim => $productId-$customerNumber');
       context.pushNamed(
         AuthRoutes.paymentPage.name!,
         extra: QrPaymentExtra(

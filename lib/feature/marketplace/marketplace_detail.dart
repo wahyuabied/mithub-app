@@ -10,7 +10,12 @@ import 'package:mithub_app/design/widget/common_dialog.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class MarketplaceDetail extends StatelessWidget {
-  const MarketplaceDetail({super.key});
+  final String? productId;
+
+  const MarketplaceDetail({
+    super.key,
+    required this.productId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -99,14 +104,17 @@ class MarketplaceDetail extends StatelessWidget {
         builder: (ctx) {
           final qrCode = 'marketplace-$productId-$customerNumber';
           return Container(
-            height: 340.h,
             padding: EdgeInsets.all(16.r),
-            child: Center(
-              child: QrImageView(
-                data: qrCode,
-                size: 280,
-              ),
-            ),
+            child: Wrap(
+              children: [
+                Center(
+                  child: QrImageView(
+                    data: qrCode,
+                    size: 280,
+                  ),
+                ),
+              ],
+            )
           );
         });
   }

@@ -173,11 +173,14 @@ class _MitraHomeContent extends StatelessWidget {
                       physics: const ClampingScrollPhysics(),
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
-                      itemCount: 4,
+                      itemCount: vm.listData.result.dataOrNull?.length,
                       itemBuilder: (BuildContext context, int index) {
                         return InkWell(
-                          onTap: (){
-                            context.pushNamed(AuthRoutes.marketplaceDetailPage.name!);
+                          onTap: () {
+                            final id = vm.listData.result.dataOrNull?[index].id;
+                            context.pushNamed(
+                                AuthRoutes.marketplaceDetailPage.name!,
+                                extra: id.toString());
                           },
                           child: Card(
                             shape: RoundedRectangleBorder(
@@ -189,35 +192,37 @@ class _MitraHomeContent extends StatelessWidget {
                                 Image.network(
                                   fit: BoxFit.fill,
                                   'http://20.20.24.134:3000' +
-                                      (vm.listData.result.dataOrNull?[index].file
-                                              ?.path
+                                      (vm.listData.result.dataOrNull?[index]
+                                              .file?.path
                                               .toString() ??
                                           ''),
                                   width: 120.w,
                                   height: 140,
                                 ),
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 4.0, top: 8.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 4.0, top: 8.0),
                                   child: SizedBox(
                                     width: 120,
                                     child: Text(
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
-                                      vm.listData.result.dataOrNull?[index].name ??
+                                      vm.listData.result.dataOrNull?[index]
+                                              .name ??
                                           '',
                                       style: context.textTheme.titleMedium,
                                     ),
                                   ),
                                 ),
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 4.0, top: 8.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 4.0, top: 8.0),
                                   child: Text(
                                     vm.listData.result.dataOrNull?[index].price
                                             .toString() ??
                                         '',
-                                    style: context.textTheme.titleSmall?.copyWith(
+                                    style:
+                                        context.textTheme.titleSmall?.copyWith(
                                       color: FunDsColors.primaryBase,
                                     ),
                                   ),

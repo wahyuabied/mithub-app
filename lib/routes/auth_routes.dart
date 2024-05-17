@@ -140,9 +140,10 @@ class AuthRoutes {
       path: '/marketplaceDetailPage',
       name: 'Marketplace Detail',
       pageBuilder: (context, state) {
+        final productId = state.extra as String;
         return APage(
           key: state.pageKey,
-          child: const MarketplaceDetail(),
+          child: MarketplaceDetail(productId: productId),
         );
       });
 

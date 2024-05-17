@@ -28,4 +28,18 @@ class MarketplaceViewModel extends ABaseChangeNotifier{
     );
   }
 
+  void getDetailProduct(String productId) {
+    Result.call(
+        future: _authRepository.getContentMarketPlace(''),
+        onResult: (result) {
+          if(result.isSuccess){
+            listData.setResult(Result.success(result.dataOrNull ?? []));
+          }else{
+            listData.setResult(Result.error('Maaf terjadi kesalahan'));
+          }
+          notifyListeners();
+        }
+    );
+  }
+
 }
