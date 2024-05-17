@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mithub_app/core/formatter/currency_formatter.dart';
 import 'package:mithub_app/design/colors.dart';
 import 'package:mithub_app/design/theme_extension.dart';
 import 'package:mithub_app/feature/home/homepage_view_model.dart';
@@ -111,7 +112,6 @@ class _MitraHomeContent extends StatelessWidget {
                       visible: true,
                       child: SizedBox(height: 16.h),
                     ),
-                    SizedBox(height: 20.h),
                     Visibility(
                       visible: true,
                       child: Column(
@@ -122,7 +122,6 @@ class _MitraHomeContent extends StatelessWidget {
                                   .watch<MitraHomeViewModel>()
                                   .userProfile
                                   .isAgent),
-                          SizedBox(height: 20.h),
                         ],
                       ),
                     ),
@@ -218,9 +217,13 @@ class _MitraHomeContent extends StatelessWidget {
                                   padding: const EdgeInsets.only(
                                       left: 4.0, top: 8.0),
                                   child: Text(
-                                    vm.listData.result.dataOrNull?[index].price
+                                    CurrencyFormatter.toRupiah(num.parse(vm
+                                            .listData
+                                            .result
+                                            .dataOrNull?[index]
+                                            .price
                                             .toString() ??
-                                        '',
+                                        '')),
                                     style:
                                         context.textTheme.titleSmall?.copyWith(
                                       color: FunDsColors.primaryBase,

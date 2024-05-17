@@ -83,7 +83,6 @@ class _MenuPpobSectionState extends State<MenuPpobSection> {
   Widget buildPpobMenu(BuildContext context, {bool expanded = false}) {
     final menus = expanded ? expandedPpobMenus : collapsedPpobMenus;
 
-
     return Column(
       mainAxisSize: expanded ? MainAxisSize.min : MainAxisSize.max,
       children: [
