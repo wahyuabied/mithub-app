@@ -150,8 +150,7 @@ class _QrScannerState extends State<QrScanner> {
                     const Spacer(),
                     InkWell(
                       onTap: () {
-                        context
-                            .pushNamed(AuthRoutes.qrGeneratorPage.name!);
+                        context.pushNamed(AuthRoutes.qrGeneratorPage.name!);
                       },
                       child: Container(
                         width: double.infinity,
@@ -227,33 +226,24 @@ class _QrScannerState extends State<QrScanner> {
   }
 
   void _scannerRouting(BuildContext context, String scanResult) {
+    /// marketplace-productId-phoneNumber
     final rawResult = scanResult.split('-');
-    final purpose = rawResult.firstOrNull;
-    final data = rawResult.lastOrNull;
-
-    // if (purpose == QrScannerPurpose.transferPocket.value) {
-    //   /// transferPocket-phoneNumber
-    //   _userProfileRepository.isNeobank.then((isAgent) {
-    //     if (isAgent) {
-    //       context.pushNamed(EwalletRoutes.ewalletTransferA1Search.name!,
-    //           extra: data);
-    //     } else {
-    //       context.pushNamed(
-    //           EwalletRoutes.ewalletTransferInternalSearchPhone.name!,
-    //           extra: data);
-    //     }
-    //   });
-    // } else if (purpose == QrScannerPurpose.withdrawal.value) {
-    //   /// withdrawal-code
-    //   var provider = Provider.of<QrScannerProvider>(context, listen: false);
-    //   provider.submitQrCode(data ?? '');
-    // } else {
-    //   bottomSheetScannerUnknown(
-    //       context: context,
-    //       onRepeat: () {
-    //         context.pop();
-    //         controller?.resumeCamera();
-    //       });
-    // }
+    if (rawResult.length == 3) {
+      final productId = rawResult[1];
+      final customerNumber = rawResult[2];
+      debugPrint('aim => $productId-$customerNumber');
+      context.pushNamed(
+        AuthRoutes.paymentPage.name!,
+        extra: QrPaymentExtra(
+          productId: productId,
+          customerNumber: customerNumber,
+        ),
+      );
+    } else {
+      _showErrorDialog(
+        title: 'Kode QR Tidak Sesuai',
+        subtitle: 'Pastikan kode QR sudah benar',
+      );
+    }
   }
 }

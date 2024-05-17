@@ -9,7 +9,9 @@ import 'package:mithub_app/design/widget/loading_dialog.dart';
 import 'package:mithub_app/feature/home/homepage.dart';
 import 'package:mithub_app/feature/login/input_pin.dart';
 import 'package:mithub_app/feature/login/login.dart';
+import 'package:mithub_app/feature/marketplace/marketplace_detail.dart';
 import 'package:mithub_app/feature/onboarding/onboarding_screen.dart';
+import 'package:mithub_app/feature/payment/payment_page.dart';
 import 'package:mithub_app/feature/scanner/qr_generator_page.dart';
 import 'package:mithub_app/feature/scanner/qr_scanner.dart';
 import 'package:mithub_app/feature/scanner/qr_scanner_provider.dart';
@@ -24,6 +26,8 @@ class AuthRoutes {
     main,
     qrScanner,
     qrGeneratorPage,
+    marketplaceDetailPage,
+    paymentPage,
   ];
 
   static final onboarding = GoRoute(
@@ -120,20 +124,26 @@ class AuthRoutes {
         );
       });
 
-// static final qrPayment = GoRoute(
-//     path: '/qrPayment',
-//     name: 'Qr Payment Confirmation',
-//     pageBuilder: (context, state) {
-//       final extra = state.extra as QrPaymentExtra;
-//       return APage(
-//         key: state.pageKey,
-//         child: PaymentConfirmationScreen(
-//           data: extra.data,
-//           balance: extra.balance,
-//           phoneNo: extra.phoneNo,
-//         ),
-//       );
-//     });
+  static final marketplaceDetailPage = GoRoute(
+      path: '/marketplaceDetailPage',
+      name: 'Marketplace Detail',
+      pageBuilder: (context, state) {
+        return APage(
+          key: state.pageKey,
+          child: const MarketplaceDetail(),
+        );
+      });
+
+  static final paymentPage = GoRoute(
+      path: '/paymentPage',
+      name: 'paymentPage',
+      pageBuilder: (context, state) {
+        final extra = state.extra as QrPaymentExtra;
+        return APage(
+          key: state.pageKey,
+          child: PaymentPage(extra: extra),
+        );
+      });
 }
 
 class AuthPurpose {

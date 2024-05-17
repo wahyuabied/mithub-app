@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mithub_app/design/colors.dart';
 import 'package:mithub_app/design/theme_extension.dart';
 import 'package:mithub_app/feature/home/homepage_view_model.dart';
@@ -8,6 +9,7 @@ import 'package:mithub_app/feature/home/mitra/section/menu_ppob_section.dart';
 import 'package:mithub_app/feature/home/mitra/section/poket_card.dart';
 import 'package:mithub_app/feature/home/mitra/view_model/mitra_home_view_model.dart';
 import 'package:mithub_app/feature/home/mitra/view_model/poket_card_view_model.dart';
+import 'package:mithub_app/routes/auth_routes.dart';
 import 'package:mithub_app/utils/page_resume.dart';
 import 'package:mithub_app/utils/result.dart';
 import 'package:provider/provider.dart';
@@ -131,9 +133,7 @@ class _MitraHomeContent extends StatelessWidget {
                       style: context.textTheme.titleMedium,
                     ),
                     InkWell(
-                      onTap: (){
-
-                      },
+                      onTap: () {},
                       child: Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.r),
@@ -163,39 +163,46 @@ class _MitraHomeContent extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       itemCount: 4,
                       itemBuilder: (BuildContext context, int index) {
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Image.network(
-                                fit: BoxFit.fill,
-                                'https://pbs.twimg.com/media/BEctmM8CMAACKlo.jpg',
-                                width: 120.w,
-                                height: 140,
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 4.0, top: 8.0),
-                                child: Text(
-                                  maxLines: 1,
-                                  'Kambing',
-                                  style: context.textTheme.titleMedium,
+                        return InkWell(
+                          onTap: () {
+                            context.pushNamed(
+                                AuthRoutes.marketplaceDetailPage.name!);
+                          },
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Image.network(
+                                  fit: BoxFit.fill,
+                                  'https://pbs.twimg.com/media/BEctmM8CMAACKlo.jpg',
+                                  width: 120.w,
+                                  height: 140,
                                 ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 4.0, top: 8.0),
-                                child: Text(
-                                  'Rp5.0000',
-                                  style: context.textTheme.titleSmall?.copyWith(
-                                    color: FunDsColors.primaryBase,
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 4.0, top: 8.0),
+                                  child: Text(
+                                    maxLines: 1,
+                                    'Kambing',
+                                    style: context.textTheme.titleMedium,
                                   ),
                                 ),
-                              ),
-                            ],
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 4.0, top: 8.0),
+                                  child: Text(
+                                    'Rp5.0000',
+                                    style:
+                                        context.textTheme.titleSmall?.copyWith(
+                                      color: FunDsColors.primaryBase,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       }),

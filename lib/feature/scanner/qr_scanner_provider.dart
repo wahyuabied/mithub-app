@@ -79,11 +79,11 @@ class QrScannerExtra {
 }
 
 class QrPaymentExtra {
-  final double balance;
-  final String phoneNo;
+  final String productId;
+  final String customerNumber;
 
   QrPaymentExtra({
-    required this.balance,
-    required this.phoneNo,
+    required this.productId,
+    required this.customerNumber,
   });
 }
