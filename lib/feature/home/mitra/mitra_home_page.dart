@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mithub_app/feature/home/homepage_view_model.dart';
 import 'package:mithub_app/feature/home/mitra/section/appbar_homepage.dart';
 import 'package:mithub_app/feature/home/mitra/section/menu_ppob_section.dart';
-import 'package:mithub_app/feature/home/mitra/section/poket_card.dart';
 import 'package:mithub_app/feature/home/mitra/view_model/mitra_home_view_model.dart';
 import 'package:mithub_app/utils/page_resume.dart';
 import 'package:mithub_app/utils/result.dart';
@@ -77,7 +76,7 @@ class _MitraHomeContent extends StatelessWidget {
           child: ListView(
             scrollDirection: Axis.vertical,
             children: [
-              const PocketCard(),
+              // const PocketCard(),
               SizedBox(height: 8.h),
               _SectionContainer(
                 child: Column(
