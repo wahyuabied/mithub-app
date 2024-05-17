@@ -62,17 +62,19 @@ class _MarketplaceDetailView extends StatelessWidget {
               ],
             ),
             Expanded(
-              child: Container(
-                padding: EdgeInsets.all(16.r),
-                child: Column(
-                  children: [
-                    Image.network(
-                      'http://20.20.24.134:3000' + (vm.data.lastData?.file?.path ?? ''),
-                      height: 200.h,
-                    ),
-                    SizedBox(height: 16.h),
-                    HtmlWidget(vm.data.lastData?.description ?? ''),
-                  ],
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.all(16.r),
+                  child: Column(
+                    children: [
+                      Image.network(
+                        'http://20.20.24.134:3000' + (vm.data.lastData?.file?.path ?? ''),
+                        height: 200.h,
+                      ),
+                      SizedBox(height: 16.h),
+                      HtmlWidget(vm.data.lastData?.description ?? ''),
+                    ],
+                  ),
                 ),
               ),
             ),

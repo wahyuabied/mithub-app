@@ -37,6 +37,11 @@ class AuthNetwork {
   static const _fcmToken = 'fcmToken';
   static const _deleteFcmToken = 'fcmToken/token';
 
+  // Transfer
+  static const _inquiry = 'transfer';
+  static const _verify = 'transfer/verify';
+
+
   final CoreHttpBuilder _http;
 
   AuthNetwork(this._http);
@@ -77,6 +82,18 @@ class AuthNetwork {
             phone: phone,
           ),
         );
+    log(jsonEncode(response.body));
+    return ApiResponse.json(response, PostCheckRegisterPhoneResponse.fromJson);
+  }
+
+  Future<JsonResponse<PostCheckRegisterPhoneResponse>> inquiry(
+      String phone,
+      ) async {
+    final response = await _http.aplus(path: _checkRegisterPhone).post(
+      PostCheckRegisterPhoneRequest(
+        phone: phone,
+      ),
+    );
     log(jsonEncode(response.body));
     return ApiResponse.json(response, PostCheckRegisterPhoneResponse.fromJson);
   }

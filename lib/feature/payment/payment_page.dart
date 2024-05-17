@@ -99,103 +99,100 @@ class _TransferInternalSearchView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
-                child: Container(
-                  padding: EdgeInsets.all(16.r),
-                  child: Column(
-                    children: [
-                      Wrap(
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 24.r,
-                                backgroundColor: FunDsColors.primaryBase,
-                                child: Text("A",
-                                    style: context.textTheme.titleSmall
-                                        ?.copyWith(color: FunDsColors.white)),
-                              ),
-                              SizedBox(width: 16.w),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Nama',
-                                    style: context.textTheme.titleSmall,
-                                  ),
-                                  SizedBox(height: 2.h),
-                                  Text(
-                                      provider.customerNumber,
-                                      style: context.textTheme.titleSmall
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 80.h),
-                      Wrap(
-                        children: [
-                          Row(
-                            children: [
-                              Image.network(
-                                'https://pbs.twimg.com/media/BEctmM8CMAACKlo.jpg',
-                                height: 80.h,
-                              ),
-                              SizedBox(width: 16.w),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Nama',
-                                    style: context.textTheme.titleSmall,
-                                  ),
-                                  SizedBox(height: 2.h),
-                                  Text(
-                                      provider.customerNumber,
-                                      style: context.textTheme.titleSmall
-                                  ),
-                                  SizedBox(height: 20.h),
-                                  Row(
-                                    children: [
-                                      InkWell(
-                                        onTap: () => provider.plusQuantity(),
-                                        child: CircleAvatar(
-                                          radius: 16.r,
-                                          backgroundColor: FunDsColors.primaryBase,
-                                          child: Text("+",
-                                              style: context.textTheme.titleSmall
-                                                  ?.copyWith(color: FunDsColors.white)),
-                                        ),
+              child: Container(
+                padding: EdgeInsets.all(16.r),
+                child: Column(
+                  children: [
+                    Wrap(
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 24.r,
+                              backgroundColor: FunDsColors.primaryBase,
+                              child: Text("A",
+                                  style: context.textTheme.titleSmall
+                                      ?.copyWith(color: FunDsColors.white)),
+                            ),
+                            SizedBox(width: 16.w),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  provider.data.lastData?.borrower?.name ?? '',
+                                  style: context.textTheme.titleSmall,
+                                ),
+                                SizedBox(height: 2.h),
+                                Text(provider.customerNumber,
+                                    style: context.textTheme.titleSmall),
+                              ],
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 40.h),
+                    Wrap(
+                      children: [
+                        Row(
+                          children: [
+                            Image.network(
+                              'http://20.20.24.134:3000' +
+                                  (provider.data.lastData?.file?.path ?? ''),
+                              height: 60.h,
+                            ),
+                            SizedBox(width: 16.w),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 2.h),
+                                Text(provider.data.lastData?.name ?? '',
+                                    style: context.textTheme.titleSmall?.copyWith(
+                                      fontSize: 12.sp,
+                                    )),
+                                SizedBox(height: 20.h),
+                                Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () => provider.minusQuantity(),
+                                      child: CircleAvatar(
+                                        radius: 16.r,
+                                        backgroundColor:
+                                            FunDsColors.primaryBase,
+                                        child: Text("-",
+                                            style: context.textTheme.titleSmall
+                                                ?.copyWith(
+                                                    color: FunDsColors.white)),
                                       ),
-                                      SizedBox(width: 12.w),
-                                      Text(
-                                          provider.quantity.toString(),
-                                          style: context.textTheme.titleSmall
+                                    ),
+                                    SizedBox(width: 12.w),
+                                    Text(provider.quantity.toString(),
+                                        style: context.textTheme.titleSmall),
+                                    SizedBox(width: 12.w),
+                                    InkWell(
+                                      onTap: () => provider.plusQuantity(),
+                                      child: CircleAvatar(
+                                        radius: 16.r,
+                                        backgroundColor:
+                                            FunDsColors.primaryBase,
+                                        child: Text("+",
+                                            style: context.textTheme.titleSmall
+                                                ?.copyWith(
+                                                    color: FunDsColors.white)),
                                       ),
-                                      SizedBox(width: 12.w),
-                                      InkWell(
-                                        onTap: () => provider.minusQuantity(),
-                                        child: CircleAvatar(
-                                          radius: 16.r,
-                                          backgroundColor: FunDsColors.primaryBase,
-                                          child: Text("-",
-                                              style: context.textTheme.titleSmall
-                                                  ?.copyWith(color: FunDsColors.white)),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
+              ),
             ),
             AButton(
               variant: ButtonVariant.primary,
@@ -206,7 +203,7 @@ class _TransferInternalSearchView extends StatelessWidget {
                   context,
                   () {
                     FocusManager.instance.primaryFocus?.unfocus();
-                    return provider.searchWallet();
+                    return provider.inquiry();
                   },
                 );
               },
