@@ -11,7 +11,6 @@ import 'package:mithub_app/feature/home/mitra/view_model/mitra_home_view_model.d
 import 'package:mithub_app/feature/home/mitra/view_model/poket_card_view_model.dart';
 import 'package:mithub_app/feature/marketplace/marketplace_viewmodel.dart';
 import 'package:mithub_app/routes/auth_routes.dart';
-import 'package:mithub_app/routes/auth_routes.dart';
 import 'package:mithub_app/utils/page_resume.dart';
 import 'package:mithub_app/utils/result.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +26,7 @@ class _MitraHomePageKeepAlive extends State<MitraHomePage>
     with AutomaticKeepAliveClientMixin {
   late final MitraHomeViewModel mitraHomeViewModel;
   late final PocketCardViewModel pocketCardViewModel;
+  late final MarketplaceViewModel marketplaceViewModel;
 
   @override
   void initState() {
@@ -39,6 +39,7 @@ class _MitraHomePageKeepAlive extends State<MitraHomePage>
     pocketCardViewModel = PocketCardViewModel(
       context.read<HomepageViewModel>().userProfileResult.data,
     );
+    marketplaceViewModel = MarketplaceViewModel()..fetchData();
   }
 
   @override
@@ -52,6 +53,9 @@ class _MitraHomePageKeepAlive extends State<MitraHomePage>
         ),
         ChangeNotifierProvider<PocketCardViewModel>.value(
           value: pocketCardViewModel,
+        ),
+        ChangeNotifierProvider<MarketplaceViewModel>.value(
+          value: marketplaceViewModel,
         ),
       ],
       builder: (context, child) {
@@ -171,50 +175,55 @@ class _MitraHomeContent extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       itemCount: 4,
                       itemBuilder: (BuildContext context, int index) {
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Image.network(
-                                fit: BoxFit.fill,
-                                'http://20.20.24.134:3000' +
-                                    (vm.listData.result.dataOrNull?[index].file
-                                            ?.path
-                                            .toString() ??
-                                        ''),
-                                width: 120.w,
-                                height: 140,
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 4.0, top: 8.0),
-                                child: SizedBox(
-                                  width: 120,
+                        return InkWell(
+                          onTap: (){
+                            context.pushNamed(AuthRoutes.marketplaceDetailPage.name!);
+                          },
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Image.network(
+                                  fit: BoxFit.fill,
+                                  'http://20.20.24.134:3000' +
+                                      (vm.listData.result.dataOrNull?[index].file
+                                              ?.path
+                                              .toString() ??
+                                          ''),
+                                  width: 120.w,
+                                  height: 140,
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 4.0, top: 8.0),
+                                  child: SizedBox(
+                                    width: 120,
+                                    child: Text(
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      vm.listData.result.dataOrNull?[index].name ??
+                                          '',
+                                      style: context.textTheme.titleMedium,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 4.0, top: 8.0),
                                   child: Text(
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    vm.listData.result.dataOrNull?[index].name ??
+                                    vm.listData.result.dataOrNull?[index].price
+                                            .toString() ??
                                         '',
-                                    style: context.textTheme.titleMedium,
+                                    style: context.textTheme.titleSmall?.copyWith(
+                                      color: FunDsColors.primaryBase,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 4.0, top: 8.0),
-                                child: Text(
-                                  vm.listData.result.dataOrNull?[index].price
-                                          .toString() ??
-                                      '',
-                                  style: context.textTheme.titleSmall?.copyWith(
-                                    color: FunDsColors.primaryBase,
-                                  ),
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         );
                       }),
