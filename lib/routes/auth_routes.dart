@@ -4,15 +4,17 @@ import 'package:mithub_app/core/di/service_locator.dart';
 import 'package:mithub_app/core/middleware/login_required.dart';
 import 'package:mithub_app/core/routing/a_page.dart';
 import 'package:mithub_app/core/routing/route_middleware.dart';
+import 'package:mithub_app/data/dto_verify_body.dart';
 import 'package:mithub_app/data/repository/auth_repository.dart';
 import 'package:mithub_app/design/widget/loading_dialog.dart';
 import 'package:mithub_app/feature/home/homepage.dart';
 import 'package:mithub_app/feature/login/input_pin.dart';
 import 'package:mithub_app/feature/login/login.dart';
-import 'package:mithub_app/feature/marketplace/marketplace_page.dart';
 import 'package:mithub_app/feature/marketplace/marketplace_detail.dart';
+import 'package:mithub_app/feature/marketplace/marketplace_page.dart';
 import 'package:mithub_app/feature/onboarding/onboarding_screen.dart';
 import 'package:mithub_app/feature/payment/payment_page.dart';
+import 'package:mithub_app/feature/payment/verify/verify_payment_page.dart';
 import 'package:mithub_app/feature/scanner/qr_generator_page.dart';
 import 'package:mithub_app/feature/scanner/qr_scanner.dart';
 import 'package:mithub_app/feature/scanner/qr_scanner_provider.dart';
@@ -30,6 +32,7 @@ class AuthRoutes {
     marketPlace,
     marketplaceDetailPage,
     paymentPage,
+    pinPage
   ];
 
   static final onboarding = GoRoute(
@@ -155,6 +158,19 @@ class AuthRoutes {
         return APage(
           key: state.pageKey,
           child: PaymentPage(extra: extra),
+        );
+      });
+
+  static final pinPage = GoRoute(
+      path: '/pinPage',
+      name: 'pinPage',
+      pageBuilder: (context, state) {
+        final response = state.extra as VerifyTransferBody;
+        return APage(
+          key: state.pageKey,
+          child: VerifiPaymentPage(
+            body: response,
+          ),
         );
       });
 }

@@ -10,7 +10,10 @@ import 'package:mithub_app/data/dto_check_mitra.dart';
 import 'package:mithub_app/data/dto_check_pin.dart';
 import 'package:mithub_app/data/dto_content_detail_marketplace_response.dart';
 import 'package:mithub_app/data/dto_content_marketplace.dart';
+import 'package:mithub_app/data/dto_get_account_number.dart';
+import 'package:mithub_app/data/dto_inquiry_transfer_response.dart';
 import 'package:mithub_app/data/dto_user_inquiry_response.dart';
+import 'package:mithub_app/data/dto_verify_body.dart';
 import 'package:mithub_app/data/repository/auth_network.dart';
 import 'package:mithub_app/data/repository/core/login_result.dart';
 import 'package:mithub_app/data/repository/core/response_extension.dart';
@@ -40,6 +43,7 @@ class AuthRepository {
   static const deviceUuidKey = 'device_uuid';
   static const mitraAccountKey = 'mitra_account';
   final userRolesKey = 'user_roles';
+  static const phoneNumber = 'phoneNumber';
   final addNik = 'add_nik';
 
   /// Check if [mitraId] is a valid registered user
@@ -179,29 +183,91 @@ class AuthRepository {
 
   Future<UserInquiryResponse?> getInquiry() async {
     var response = await _authNetwork.getInquiry();
-    if(response.isSuccess){
+    if (response.isSuccess) {
+      _secureStorage.setString(
+        CoreHttpRepository.coreAccountNumber,
+        response.data?.accountNumber ?? '',
+      );
+      _secureStorage.setString(
+        phoneNumber,
+        response.data?.phoneNumber ?? '',
+      );
       return response.data;
-    }else{
+    } else {
       return null;
     }
   }
 
-  Future<List<ContentMarketPlaceResponse>?> getContentMarketPlace(String keyword) async {
+  Future<List<ContentMarketPlaceResponse>?> getContentMarketPlace(
+      String keyword) async {
     var response = await _authNetwork.getListContentMarketPlace(keyword);
-    if(response.isSuccess){
+    if (response.isSuccess) {
       return response.data;
-    }else{
+    } else {
       return null;
     }
   }
 
   Future<ContentDetailMarketPlace?> getContentDetailMarketPlace(int id) async {
     var response = await _authNetwork.getContentMarketPlace(id);
-    if(response.isSuccess){
+    if (response.isSuccess) {
       return response.data;
-    }else{
+    } else {
       return null;
     }
   }
 
+  Future<GetAccountNumberResponse?> getAccountNumber(
+      String accountNumber) async {
+    var response = await _authNetwork.getAccountNumber(accountNumber);
+    if (response.isSuccess) {
+      return response.data;
+    } else {
+      return null;
+    }
+  }
+
+  Future<InquiryTransferResponse?> inquiryTransfer(
+    String accountNumber,
+    String beneficiaryAccountNumber,
+    int amount,
+  ) async {
+    var response = await _authNetwork.inquiryTransfer(
+      accountNumber,
+      beneficiaryAccountNumber,
+      amount,
+    );
+    if (response.isSuccess) {
+      return response.data;
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool> verifyPayment(
+    String pin,
+    int trxId,
+    String beneficiaryAccountNumber,
+    String receiptNumber,
+    int amount,
+  ) async {
+    var response = await _authNetwork.verifyPin(pin, trxId);
+    if (response.isSuccess) {
+      final accountNumber = await _secureStorage
+          .getString(CoreHttpRepository.coreAccountNumber)
+          .then((value) {
+        return value;
+      });
+      await _authNetwork.verifyTransfer(
+        VerifyTransferBody(
+            accountNumber: accountNumber,
+            beneficiaryAccountNumber: beneficiaryAccountNumber,
+            receiptNumber: receiptNumber,
+            amount: amount),
+      );
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

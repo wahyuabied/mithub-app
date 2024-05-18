@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mithub_app/core/formatter/currency_formatter.dart';
+import 'package:mithub_app/data/dto_verify_body.dart';
 import 'package:mithub_app/design/colors.dart';
 import 'package:mithub_app/design/theme_extension.dart';
 import 'package:mithub_app/design/widget/a_button.dart';
@@ -8,6 +11,7 @@ import 'package:mithub_app/design/widget/error_loading_dialog.dart';
 import 'package:mithub_app/design/widget/loading_dialog.dart';
 import 'package:mithub_app/feature/payment/payment_provider.dart';
 import 'package:mithub_app/feature/scanner/qr_scanner_provider.dart';
+import 'package:mithub_app/routes/auth_routes.dart';
 import 'package:provider/provider.dart';
 
 class PaymentPage extends StatelessWidget {
@@ -110,7 +114,7 @@ class _TransferInternalSearchView extends StatelessWidget {
                             CircleAvatar(
                               radius: 24.r,
                               backgroundColor: FunDsColors.primaryBase,
-                              child: Text("A",
+                              child: Text((provider.data.lastData?.borrower?.name ?? '')[0] ?? '',
                                   style: context.textTheme.titleSmall
                                       ?.copyWith(color: FunDsColors.white)),
                             ),
@@ -148,7 +152,17 @@ class _TransferInternalSearchView extends StatelessWidget {
                               children: [
                                 SizedBox(height: 2.h),
                                 Text(provider.data.lastData?.name ?? '',
-                                    style: context.textTheme.titleSmall?.copyWith(
+                                    style:
+                                        context.textTheme.titleSmall?.copyWith(
+                                      fontSize: 12.sp,
+                                    )),
+                                Text(
+                                    CurrencyFormatter.getCurrencyFormat(
+                                        double.parse(
+                                            (provider.data.lastData?.price ?? 0)
+                                                .toString())),
+                                    style:
+                                        context.textTheme.titleSmall?.copyWith(
                                       fontSize: 12.sp,
                                     )),
                                 SizedBox(height: 20.h),
@@ -194,6 +208,24 @@ class _TransferInternalSearchView extends StatelessWidget {
                 ),
               ),
             ),
+            Container(
+              padding: EdgeInsets.all(8.r),
+              child: Row(
+                children: [
+                  Text('Total',
+                      style: context.textTheme.titleSmall?.copyWith(
+                        fontSize: 12.sp,
+                      )),
+                  SizedBox(width: 8.w),
+                  Text(
+                      CurrencyFormatter.getCurrencyFormat(
+                          provider.amount.toDouble()),
+                      style: context.textTheme.titleSmall?.copyWith(
+                        fontSize: 12.sp,
+                      )),
+                ],
+              ),
+            ),
             AButton(
               variant: ButtonVariant.primary,
               flat: true,
@@ -202,10 +234,19 @@ class _TransferInternalSearchView extends StatelessWidget {
                 LoadingDialog.runWithLoading(
                   context,
                   () {
-                    FocusManager.instance.primaryFocus?.unfocus();
                     return provider.inquiry();
                   },
-                );
+                ).then((value) {
+                  final body = VerifyTransferBody(
+                    accountNumber: provider.accountNumber,
+                    beneficiaryAccountNumber: provider.beneficiaryAccountNumber,
+                    amount: provider.amount,
+                    receiptNumber: value?.receiptNumber ?? '',
+                    transactionId: (value?.transactionId ?? 0).toString(),
+                  );
+
+                  context.pushNamed(AuthRoutes.pinPage.name!, extra: body);
+                });
               },
             ),
           ],

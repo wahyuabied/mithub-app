@@ -8,6 +8,7 @@ class CoreHttpRepository {
   static const coreTokenKey = 'token';
   static const coreRefreshTokenKey = 'refresh_token';
   static const coreEnv = 'current_environment';
+  static const coreAccountNumber = 'account_number';
 
   final CoreSecureStorage secureStorage;
 

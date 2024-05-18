@@ -8,9 +8,12 @@ import 'package:mithub_app/data/dto_check_register_phone.dart';
 import 'package:mithub_app/data/dto_content_detail_marketplace_response.dart';
 import 'package:mithub_app/data/dto_content_marketplace.dart';
 import 'package:mithub_app/data/dto_fcm_token.dart';
+import 'package:mithub_app/data/dto_get_account_number.dart';
+import 'package:mithub_app/data/dto_inquiry_transfer_response.dart';
 import 'package:mithub_app/data/dto_user_inquiry_response.dart';
 import 'package:mithub_app/data/dto_user_login.dart';
 import 'package:mithub_app/data/dto_user_profile.dart';
+import 'package:mithub_app/data/dto_verify_body.dart';
 import 'package:mithub_app/data/repository/core/api_response.dart';
 import 'package:mithub_app/data/repository/core/json_list_response.dart';
 import 'package:mithub_app/data/repository/core/json_response.dart';
@@ -26,6 +29,10 @@ class AuthNetwork {
   static const _userInquiry = 'wallets/inquiry-account';
   static const _marketPlace = 'products';
   static const _marketPlaceDetail = 'products/';
+  static const _getPhoneNumber = 'wallets/';
+  static const _inquiryTransfer = 'transfer';
+  static const _verifyPin = 'transfer/verify-pin';
+  static const _verifyTransfer = 'transfer/verify';
 
   // Profile
   static const _profileCheckPin = 'user/checkPin';
@@ -38,9 +45,6 @@ class AuthNetwork {
   static const _deleteFcmToken = 'fcmToken/token';
 
   // Transfer
-  static const _inquiry = 'transfer';
-  static const _verify = 'transfer/verify';
-
 
   final CoreHttpBuilder _http;
 
@@ -87,13 +91,13 @@ class AuthNetwork {
   }
 
   Future<JsonResponse<PostCheckRegisterPhoneResponse>> inquiry(
-      String phone,
-      ) async {
+    String phone,
+  ) async {
     final response = await _http.aplus(path: _checkRegisterPhone).post(
-      PostCheckRegisterPhoneRequest(
-        phone: phone,
-      ),
-    );
+          PostCheckRegisterPhoneRequest(
+            phone: phone,
+          ),
+        );
     log(jsonEncode(response.body));
     return ApiResponse.json(response, PostCheckRegisterPhoneResponse.fromJson);
   }
@@ -169,6 +173,7 @@ class AuthNetwork {
 
   Future<JsonResponse<UserInquiryResponse>> getInquiry() async {
     final response = await _http.localHostApp(path: _userInquiry).get();
+
     return ApiResponse.json(response, UserInquiryResponse.fromMap);
   }
 
@@ -176,17 +181,57 @@ class AuthNetwork {
       getListContentMarketPlace(String keyword) async {
     var query = {
       'page': 1.toString(),
-      'limit':10.toString(),
-      'search':keyword
+      'limit': 10.toString(),
+      'search': keyword
     };
     final response =
         await _http.localHostApp(path: _marketPlace, query: query).get();
     return ApiResponse.jsonList(response, ContentMarketPlaceResponse.fromMap);
   }
 
-  Future<JsonResponse<ContentDetailMarketPlace>> getContentMarketPlace(int id) async {
-    final response =
-    await _http.localHostApp(path: _marketPlaceDetail+id.toString()).get();
+  Future<JsonResponse<ContentDetailMarketPlace>> getContentMarketPlace(
+      int id) async {
+    final response = await _http
+        .localHostApp(path: _marketPlaceDetail + id.toString())
+        .get();
     return ApiResponse.json(response, ContentDetailMarketPlace.fromMap);
+  }
+
+  Future<JsonResponse<GetAccountNumberResponse>> getAccountNumber(
+      String phone) async {
+    final response =
+        await _http.localHostApp(path: '$_getPhoneNumber$phone/search').get();
+    return ApiResponse.json(response, GetAccountNumberResponse.fromMap);
+  }
+
+  Future<ApiResponse> verifyPin(String pin, int trxId) async {
+    final response = await _http
+        .localHostApp(path: _verifyPin)
+        .post({'pin': pin, 'transaction_id': trxId});
+    return ApiResponse(response);
+  }
+
+  Future<JsonResponse<InquiryTransferResponse>> inquiryTransfer(
+    String accountNumber,
+    String beneficiaryAccountNumber,
+    int amount,
+  ) async {
+    final response = await _http.localHostApp(path: _inquiryTransfer).post({
+      'account_number': accountNumber,
+      'beneficiary_account_number': beneficiaryAccountNumber,
+      'amount': amount,
+      'category_id': 23,
+    });
+    return ApiResponse.json(response, InquiryTransferResponse.fromMap);
+  }
+
+  Future<ApiResponse> verifyTransfer(VerifyTransferBody body) async {
+    final response = await _http.localHostApp(path: _verifyTransfer).post({
+      "account_number": body.accountNumber,
+      "beneficiary_account_number": body.beneficiaryAccountNumber,
+      "amount": body.amount,
+      "receipt_number": body.receiptNumber
+    });
+    return ApiResponse(response);
   }
 }
